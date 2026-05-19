@@ -26,60 +26,28 @@ async function getBucketName() {
   return output.OutputValue;
 }
 
+const fs = require('fs');
+const path = require('path');
+
 function hashPhrase(phrase) {
   return crypto.createHash('md5').update(phrase.toLowerCase().trim()).digest('hex');
 }
 
-// All lesson phrases from the app
-const PHRASES = [
-  // Module 1: Hospitalidad Cercana
-  "Sejam bem-vindos! Fiquem à vontade.",
-  "Mesa para quantos? Gostariam de uma mesa interna ou no terraço?",
-  "O meu nome é João, serei o seu garçom hoje.",
-  "Posso trazer o cardápio ou gostariam de ver o QR code?",
-  "Aceitam algo para beber enquanto decidem o prato?",
-  "Desejam água com ou sem gás? Com gelo e limão?",
-  "Por aqui, por favor. Acompanhem-me.",
-  "Estão celebrando alguma ocasião especial hoje?",
-  "Qualquer coisa que precisarem, é só me chamar.",
-  "Tenham um excelente jantar e desfrutem da comida.",
-  
-  // Module 2: Maestría Parrillera
-  "O Lomo Vetado é o nosso Contrafilé, muito suculento.",
-  "A Punta de Ganso é a famosa Picanha brasileira.",
-  "Como gostariam do ponto da carne?",
-  "Mal passado: a carne fica bem vermelha e suculenta no centro.",
-  "Ao ponto: rosada no centro, o ponto mais pedido.",
-  "Bem passado: totalmente cozida, sem partes rosadas.",
-  "Desejam o Lomo Liso ou o Lomo Vetado? O Vetado tem mais gordura.",
-  "Os acompanhamentos são à parte ou prefere um prato combinado?",
-  "Esta carne é maturada por vinte e um dias.",
-  "Recomendo a nossa Parrillada para compartilhar.",
-  
-  // Module 3: Clásicos del Campo
-  "Cuidado com o caroço na empanada de pino.",
-  "O Pastel de Choclo é feito com milho fresco moído.",
-  "As Humitas são cozidas na própria palha do milho.",
-  "O pino é uma mistura de carne picada, cebola e temperos.",
-  "Gostariam de adicionar açúcar ou tomate no Pastel de Choclo?",
-  "A Cazuela é uma sopa tradicional com carne e legumes.",
-  "O Porotos con Riendas leva feijão e macarrão espaguete.",
-  "Acompanha uma taça de vinho tinto da casa?",
-  "Este prato é servido em uma tigela de greda quente.",
-  "Desejam o molho pebre? É um pouco picante.",
-  
-  // Module 4: Sandwichería y Mar
-  "O Chacarero é um sanduíche de carne com feijão verde.",
-  "O Barros Luco leva carne grelhada e queijo derretido.",
-  "O Mariscal é um mix de mariscos crus com limão e cebola.",
-  "Temos Machas à Parmesana, são gratinadas com queijo.",
-  "O Congro Frito é o peixe mais tradicional do Chile.",
-  "Gostariam de pão com manteiga enquanto esperam?",
-  "O Caldillo de Congrio é uma sopa de peixe muito rica.",
-  "Temos cervejas artesanais chilenas muito boas.",
-  "O sanduíche é servido em pão frica ou marraqueta?",
-  "Desejam maionese caseira? É a nossa especialidade.",
-];
+function getPhrasesFromLessons() {
+  const filePath = path.join(__dirname, '../src/lib/lessons.ts');
+  const content = fs.readFileSync(filePath, 'utf8');
+  const phrases = [];
+  const regex = /phrase_pt:\s*["']([^"']+)["']/g;
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    // Replace escape sequences if any
+    phrases.push(match[1].replace(/\\"/g, '"').replace(/\\'/g, "'"));
+  }
+  return [...new Set(phrases)]; // deduplicate
+}
+
+const PHRASES = getPhrasesFromLessons();
+
 
 async function synthesize(phrase) {
   const result = await polly.send(new SynthesizeSpeechCommand({

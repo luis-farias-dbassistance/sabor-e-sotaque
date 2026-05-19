@@ -2,14 +2,14 @@
  * Tests for INITIAL_DATA integrity
  * Validates that all modules and lessons have correct structure
  */
-import { INITIAL_DATA, Lesson, Module } from '@/lib/lessons';
+import { INITIAL_DATA } from '@/lib/lessons';
 
 describe('Lesson Data Integrity', () => {
   const moduleIds = Object.keys(INITIAL_DATA);
 
-  test('should have exactly 4 modules', () => {
-    expect(moduleIds).toHaveLength(4);
-    expect(moduleIds).toEqual(['1', '2', '3', '4']);
+  test('should have exactly 13 modules', () => {
+    expect(moduleIds).toHaveLength(13);
+    expect(moduleIds).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']);
   });
 
   test.each(moduleIds)('module "%s" should have required fields', (id) => {
@@ -18,6 +18,7 @@ describe('Lesson Data Integrity', () => {
     expect(mod.id).toBe(id);
     expect(mod.title).toBeTruthy();
     expect(mod.subtitle).toBeTruthy();
+    expect(['gastronomy', 'logistics', 'adventure']).toContain(mod.category);
     expect(Array.isArray(mod.lessons)).toBe(true);
   });
 
@@ -58,7 +59,6 @@ describe('Lesson Data Integrity', () => {
 
   test('Portuguese phrases should contain Portuguese-specific characters', () => {
     const allPhrases = Object.values(INITIAL_DATA).flatMap(m => m.lessons.map(l => l.phrase_pt));
-    // At least some phrases should have Portuguese diacritics
     const hasPortugueseChars = allPhrases.some(p => /[ãõçéêáàâíúûü]/i.test(p));
     expect(hasPortugueseChars).toBe(true);
   });
@@ -79,8 +79,8 @@ describe('Lesson Data Integrity', () => {
     expect(INITIAL_DATA['2'].title).toBe('Maestría Parrillera');
   });
 
-  test('total lessons should be exactly 40', () => {
+  test('total lessons should be exactly 130', () => {
     const total = Object.values(INITIAL_DATA).reduce((sum, mod) => sum + mod.lessons.length, 0);
-    expect(total).toBe(40);
+    expect(total).toBe(130);
   });
 });

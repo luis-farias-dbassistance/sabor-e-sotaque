@@ -5,29 +5,24 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Lock, Star, BarChart3, Settings, LogOut, DownloadCloud, Wifi, WifiOff } from 'lucide-react';
 import { getUser, logout } from '@/lib/api';
-
-interface MapNode {
-  id: number;
-  title: string;
-  status: 'completed' | 'current' | 'locked';
-  imageUrl: string;
-}
-
-const NODES: MapNode[] = [
-  { id: 1, title: 'Hospitalidad Cercana', status: 'completed', imageUrl: '/images/hospitalidad.avif' },
-  { id: 2, title: 'Maestría Parrillera', status: 'current', imageUrl: '/images/parrilla.avif' },
-  { id: 3, title: 'Clásicos del Campo', status: 'current', imageUrl: '/images/campo.avif' },
-  { id: 4, title: 'Sandwichería y Mar', status: 'current', imageUrl: '/images/mar.avif' },
-];
+import { INITIAL_DATA } from '@/lib/lessons';
 
 export const FlavorMap = () => {
   const user = getUser();
+  
+  // Tabs and categories
+  const [activeCategory, setActiveCategory] = useState<'logistics' | 'adventure' | 'gastronomy'>('gastronomy');
   
   // Sync state
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
   const [syncStatus, setSyncStatus] = useState('');
   const [isOfflineReady, setIsOfflineReady] = useState(false);
+
+  // User stats state
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [totalCompleted, setTotalCompleted] = useState(0);
+  const [completedModuleIds, setCompletedModuleIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -37,8 +32,30 @@ export const FlavorMap = () => {
       if (!isCached) {
         startOfflineSync();
       }
+      
+      calculateUserStats();
     }
-  }, []);
+  }, [isSyncing]);
+
+  const calculateUserStats = () => {
+    let completedCount = 0;
+    const completedMods: string[] = [];
+    
+    Object.keys(INITIAL_DATA).forEach(modId => {
+      const saved = localStorage.getItem(`module_${modId}_progress`);
+      if (saved) {
+        const completedLessons = JSON.parse(saved);
+        completedCount += completedLessons.length;
+        if (completedLessons.length === INITIAL_DATA[modId].lessons.length) {
+          completedMods.push(modId);
+        }
+      }
+    });
+
+    setTotalCompleted(completedCount);
+    setTotalPoints(completedCount * 50);
+    setCompletedModuleIds(completedMods);
+  };
 
   const startOfflineSync = async () => {
     setIsSyncing(true);
@@ -46,12 +63,16 @@ export const FlavorMap = () => {
     setSyncStatus('Iniciando descarga de lecciones...');
 
     try {
-      const assets: string[] = [
-        '/images/hospitalidad.avif',
-        '/images/parrilla.avif',
-        '/images/campo.avif',
-        '/images/mar.avif',
-      ];
+      const assets: string[] = [];
+      
+      // Get all images from modules
+      Object.values(INITIAL_DATA).forEach(mod => {
+        mod.lessons.forEach(l => {
+          if (!assets.includes(l.imageUrl)) {
+            assets.push(l.imageUrl);
+          }
+        });
+      });
 
       setSyncStatus('Buscando lista de audios...');
       setSyncProgress(10);
@@ -75,7 +96,6 @@ export const FlavorMap = () => {
       for (let i = 0; i < assets.length; i++) {
         const url = assets[i];
         try {
-          // fetch and force cache
           await fetch(url, { cache: 'force-cache' });
         } catch (e) {
           console.warn('Failed to pre-cache:', url);
@@ -101,6 +121,35 @@ export const FlavorMap = () => {
     }
   };
 
+  // Get active nodes based on category tab
+  const activeModules = Object.values(INITIAL_DATA).filter(m => m.category === activeCategory);
+  
+  // Format nodes for active tab
+  const nodes = activeModules.map((m) => {
+    const isCompleted = completedModuleIds.includes(m.id);
+    return {
+      id: m.id,
+      title: m.title,
+      subtitle: m.subtitle,
+      status: isCompleted ? 'completed' as const : 'current' as const,
+      imageUrl: m.lessons[0]?.imageUrl || '/images/hospitalidad.avif'
+    };
+  });
+
+  // Calculate Level and Rank details
+  const getLevelDetails = () => {
+    if (totalPoints >= 1500) {
+      return { level: 3, label: 'ANFITRIÓN DE ORO', targetPts: 3000, nextLabel: 'MAESTRO SUPREMO' };
+    }
+    if (totalPoints >= 500) {
+      return { level: 2, label: 'GARÇOM PRO', targetPts: 1500, nextLabel: 'ANFITRIÓN DE ORO' };
+    }
+    return { level: 1, label: 'AYUDANTE', targetPts: 500, nextLabel: 'GARÇOM PRO' };
+  };
+
+  const levelDetails = getLevelDetails();
+  const progressPercent = Math.min(100, (totalPoints / levelDetails.targetPts) * 100);
+
   return (
     <div className="relative min-h-screen py-20 px-6 flex flex-col items-center overflow-hidden">
       {/* Background decoration */}
@@ -109,15 +158,49 @@ export const FlavorMap = () => {
         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/10 blur-[120px] rounded-full" />
       </div>
 
-      <header className="mb-12 text-center relative w-full max-w-md">
+      <header className="mb-10 text-center relative w-full max-w-md">
         <div className="absolute -top-10 right-0 flex items-center gap-2 bg-zinc-900/50 px-4 py-2 rounded-full border border-zinc-800">
           <span className="text-amber-500 font-bold">5</span>
           <span className="text-zinc-400 text-xs uppercase tracking-tighter">Días de Racha</span>
           <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
         </div>
-        <h1 className="text-4xl font-black text-white mb-2 tracking-tight">MAPA DE SABORES</h1>
-        <p className="text-zinc-400 text-sm">Domina el arte de servir al turista brasileño</p>
+        <h1 className="text-4xl font-black text-white mb-2 tracking-tight">SABORES & EXPERIENCIAS</h1>
+        <p className="text-zinc-400 text-sm">Domina el servicio para el turista brasileño</p>
       </header>
+
+      {/* Specialty Category Tabs */}
+      <div className="w-full max-w-md mb-10 bg-zinc-900/60 p-1.5 rounded-2xl border border-zinc-800/80 flex gap-1">
+        <button
+          onClick={() => setActiveCategory('gastronomy')}
+          className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
+            activeCategory === 'gastronomy'
+              ? 'bg-amber-500 text-black shadow-lg font-black'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          🍽️ Sabores
+        </button>
+        <button
+          onClick={() => setActiveCategory('logistics')}
+          className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
+            activeCategory === 'logistics'
+              ? 'bg-amber-500 text-black shadow-lg font-black'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          🏨 Logística
+        </button>
+        <button
+          onClick={() => setActiveCategory('adventure')}
+          className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
+            activeCategory === 'adventure'
+              ? 'bg-amber-500 text-black shadow-lg font-black'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          🏔️ Aventura
+        </button>
+      </div>
 
       {/* Offline sync progress card */}
       <AnimatePresence>
@@ -168,11 +251,12 @@ export const FlavorMap = () => {
         </div>
       )}
 
+      {/* Vertical Map Path */}
       <div className="relative flex flex-col gap-12 w-full max-w-md">
         {/* Connection line */}
         <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-amber-500/50 via-zinc-800 to-zinc-900 -translate-x-1/2 -z-10" />
 
-        {NODES.map((node, index) => (
+        {nodes.map((node, index) => (
           <motion.div
             key={node.id}
             initial={{ x: index % 2 === 0 ? -20 : 20, opacity: 0 }}
@@ -181,10 +265,9 @@ export const FlavorMap = () => {
             className={`flex items-center gap-6 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse text-right'}`}
           >
             <Link 
-              href={node.status === 'locked' ? '#' : `/lesson/${node.id}`}
+              href={`/lesson/${node.id}`}
               className={`group relative w-32 h-32 rounded-3xl overflow-hidden border-4 transition-all ${
-                node.status === 'current' ? 'border-amber-500 scale-110 shadow-[0_0_30px_rgba(245,158,11,0.3)]' : 
-                node.status === 'completed' ? 'border-emerald-500' : 'border-zinc-800 grayscale'
+                node.status === 'completed' ? 'border-emerald-500' : 'border-amber-500 scale-110 shadow-[0_0_30px_rgba(245,158,11,0.3)]'
               }`}
             >
               <img 
@@ -194,40 +277,50 @@ export const FlavorMap = () => {
               />
               
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-center justify-center">
-                {node.status === 'locked' && <Lock className="text-white w-8 h-8 opacity-50" />}
-                {node.status === 'completed' && <Check className="text-emerald-400 w-10 h-10 drop-shadow-lg" />}
-                {node.status === 'current' && <Star className="text-amber-400 w-10 h-10 animate-pulse" />}
+                {node.status === 'completed' ? (
+                  <Check className="text-emerald-400 w-10 h-10 drop-shadow-lg" />
+                ) : (
+                  <Star className="text-amber-400 w-10 h-10 animate-pulse" />
+                )}
               </div>
             </Link>
 
             <div className="flex-1">
-              <h3 className={`text-xl font-bold ${node.status === 'locked' ? 'text-zinc-600' : 'text-white'}`}>
+              <h3 className="text-xl font-bold text-white leading-tight">
                 {node.title}
               </h3>
-              <p className="text-zinc-500 text-sm">
-                {node.status === 'locked' ? 'Nivel 2 requerido' : 'Módulo de aprendizaje'}
+              <p className="text-zinc-500 text-sm mt-1">
+                {node.subtitle}
               </p>
             </div>
           </motion.div>
         ))}
       </div>
 
+      {/* Progression level card */}
       <div className="mt-20 p-6 bg-zinc-900/80 rounded-3xl border border-zinc-800 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2">
             <span className="px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-xs font-bold border border-amber-500/20">
-              AYUDANTE
+              {levelDetails.label}
             </span>
             <span className="px-3 py-1 bg-zinc-800 text-zinc-400 rounded-full text-xs font-bold">
-              LVL 1
+              LVL {levelDetails.level}
             </span>
           </div>
-          <div className="text-amber-500 font-black">120 PTS</div>
+          <div className="text-amber-500 font-black">{totalPoints} PTS</div>
         </div>
         <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
-          <div className="w-1/3 h-full bg-amber-500" />
+          <div 
+            className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 transition-all duration-500" 
+            style={{ width: `${progressPercent}%` }}
+          />
         </div>
-        <p className="text-zinc-500 text-xs mt-3 text-center">Faltan 280 pts para el rango "Garçom"</p>
+        <p className="text-zinc-500 text-xs mt-3 text-center">
+          {totalPoints >= 3000 
+            ? '¡Eres un Maestro Supremo de la hospitalidad!'
+            : `Faltan ${levelDetails.targetPts - totalPoints} pts para el rango "${levelDetails.nextLabel}"`}
+        </p>
       </div>
 
       {/* Bottom Navigation */}
