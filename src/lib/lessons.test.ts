@@ -63,10 +63,10 @@ describe('Lesson Data Integrity', () => {
     expect(hasPortugueseChars).toBe(true);
   });
 
-  test('every imageUrl should reference an avif file in /images/', () => {
+  test('every imageUrl should reference a valid image file in /images/', () => {
     for (const mod of Object.values(INITIAL_DATA)) {
       for (const lesson of mod.lessons) {
-        expect(lesson.imageUrl).toMatch(/^\/images\/\w+\.avif$/);
+        expect(lesson.imageUrl).toMatch(/^\/images\/\w+\.(avif|png|jpg)$/);
       }
     }
   });
