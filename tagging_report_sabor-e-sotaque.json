@@ -1,0 +1,41 @@
+{
+    "total_recursos_encontrados": 8,
+    "total_recursos_taggeados": 8,
+    "recursos_taggeados": [
+        {
+            "ARN": "arn:aws:dynamodb:us-east-1:541341196606:table/SaborSotaque-Lessons",
+            "Tipo": "dynamodb"
+        },
+        {
+            "ARN": "arn:aws:cloudformation:us-east-1:541341196606:stack/sabor-sotaque-frontend/d92ef270-52ef-11f1-948a-0affed40063f",
+            "Tipo": "cloudformation"
+        },
+        {
+            "ARN": "arn:aws:dynamodb:us-east-1:541341196606:table/SaborSotaque-Progress",
+            "Tipo": "dynamodb"
+        },
+        {
+            "ARN": "arn:aws:dynamodb:us-east-1:541341196606:table/SaborSotaque-Users",
+            "Tipo": "dynamodb"
+        },
+        {
+            "ARN": "arn:aws:lambda:us-east-1:541341196606:function:SaborSotaque-API",
+            "Tipo": "lambda"
+        },
+        {
+            "ARN": "arn:aws:s3:::sabor-sotaque-541341196606",
+            "Tipo": "s3"
+        },
+        {
+            "ARN": "arn:aws:cloudformation:us-east-1:541341196606:stack/sabor-sotaque-backend/98ca1d40-52ef-11f1-b012-12671d63f975",
+            "Tipo": "cloudformation"
+        },
+        {
+            "ARN": "arn:aws:s3:::sabor-sotaque-541341196606",
+            "Tipo": "s3"
+        }
+    ],
+    "errores": [],
+    "recursos_no_taggeables": [],
+    "fecha_hora_ejecucion": "2026-05-29T11:55:23.489596"
+}
