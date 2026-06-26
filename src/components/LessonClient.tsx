@@ -82,6 +82,7 @@ export default function LessonClient() {
         }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        module={moduleData}
       />
 
       <div className="flex-1 flex flex-col h-full overflow-y-auto bg-black relative">

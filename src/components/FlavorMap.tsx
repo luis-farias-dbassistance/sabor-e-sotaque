@@ -11,7 +11,7 @@ export const FlavorMap = () => {
   const user = getUser();
   
   // Tabs and categories
-  const [activeCategory, setActiveCategory] = useState<'logistics' | 'adventure' | 'gastronomy'>('gastronomy');
+  const [activeCategory, setActiveCategory] = useState<'logistics' | 'adventure' | 'gastronomy' | 'security'>('gastronomy');
   
   // Sync state
   const [isSyncing, setIsSyncing] = useState(false);
@@ -118,10 +118,20 @@ export const FlavorMap = () => {
       // Get audio manifest
       const manifestRes = await fetch('/audio/manifest.json');
       if (manifestRes.ok) {
-        const manifest = await manifestRes.json();
-        const hashes = Object.keys(manifest);
+        const manifestRaw = await manifestRes.json();
+        // Support both legacy flat format and new {phrases, vocabulary} format
+        const phraseManifest = manifestRaw.phrases ?? manifestRaw;
+        const hashes = Object.keys(phraseManifest);
         for (const hash of hashes) {
           assets.push(`/audio/${hash}.mp3`);
+        }
+        // Include vocabulary audio
+        if (manifestRaw.vocabulary) {
+          for (const [modId, words] of Object.entries(manifestRaw.vocabulary as Record<string, Record<string, string>>)) {
+            for (const url of Object.values(words)) {
+              assets.push(url);
+            }
+          }
         }
       }
 
@@ -170,7 +180,9 @@ export const FlavorMap = () => {
       title: m.title,
       subtitle: m.subtitle,
       status: isCompleted ? 'completed' as const : 'current' as const,
-      imageUrl: m.lessons[0]?.imageUrl || '/images/hospitalidad.avif'
+      imageUrl: m.lessons[0]?.imageUrl || '/images/hospitalidad.avif',
+      isSecure: m.category === 'security',
+      hasVocab: (m.vocabulary?.length ?? 0) > 0,
     };
   });
 
@@ -207,7 +219,7 @@ export const FlavorMap = () => {
       </header>
 
       {/* Specialty Category Tabs */}
-      <div className="w-full max-w-md mb-10 bg-zinc-900/60 p-1.5 rounded-2xl border border-zinc-800/80 flex gap-1">
+      <div className="w-full max-w-md mb-10 bg-zinc-900/60 p-1.5 rounded-2xl border border-zinc-800/80 flex gap-1 flex-wrap">
         <button
           onClick={() => setActiveCategory('gastronomy')}
           className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
@@ -237,6 +249,16 @@ export const FlavorMap = () => {
           }`}
         >
           🏔️ Aventura
+        </button>
+        <button
+          onClick={() => setActiveCategory('security')}
+          className={`flex-1 py-3 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
+            activeCategory === 'security'
+              ? 'bg-red-600 text-white shadow-lg shadow-red-900/50 font-black'
+              : 'text-zinc-400 hover:text-red-400'
+          }`}
+        >
+          ⛑️ Seguridad
         </button>
       </div>
 
@@ -305,7 +327,11 @@ export const FlavorMap = () => {
             <Link 
               href={`/lesson/${node.id}`}
               className={`group relative w-32 h-32 rounded-3xl overflow-hidden border-4 transition-all ${
-                node.status === 'completed' ? 'border-emerald-500' : 'border-amber-500 scale-110 shadow-[0_0_30px_rgba(245,158,11,0.3)]'
+                node.status === 'completed'
+                  ? 'border-emerald-500'
+                  : node.isSecure
+                  ? 'border-red-700 scale-110 shadow-[0_0_30px_rgba(220,38,38,0.4)]'
+                  : 'border-amber-500 scale-110 shadow-[0_0_30px_rgba(245,158,11,0.3)]'
               }`}
             >
               <img 
@@ -317,6 +343,8 @@ export const FlavorMap = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-center justify-center">
                 {node.status === 'completed' ? (
                   <Check className="text-emerald-400 w-10 h-10 drop-shadow-lg" />
+                ) : node.isSecure ? (
+                  <span className="text-3xl drop-shadow-lg">🚨</span>
                 ) : (
                   <Star className="text-amber-400 w-10 h-10 animate-pulse" />
                 )}
@@ -324,12 +352,26 @@ export const FlavorMap = () => {
             </Link>
 
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white leading-tight">
+              <h3 className={`text-xl font-bold leading-tight ${
+                node.isSecure ? 'text-red-400' : 'text-white'
+              }`}>
                 {node.title}
               </h3>
               <p className="text-zinc-500 text-sm mt-1">
                 {node.subtitle}
               </p>
+              {node.hasVocab && (
+                <Link
+                  href={`/lesson/${node.id}/vocab`}
+                  className={`inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border ${
+                    node.isSecure
+                      ? 'bg-red-950/60 border-red-800/50 text-red-400 hover:bg-red-900/60'
+                      : 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20'
+                  }`}
+                >
+                  📚 Vocabulario
+                </Link>
+              )}
             </div>
           </motion.div>
         ))}

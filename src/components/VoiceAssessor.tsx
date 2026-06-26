@@ -49,7 +49,9 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
         // Try to fetch the audio manifest to find the right hash
         const manifestRes = await fetch('/audio/manifest.json');
         if (manifestRes.ok) {
-          const manifest = await manifestRes.json();
+          const manifestRaw = await manifestRes.json();
+          // Support both legacy flat format and new {phrases, vocabulary} format
+          const manifest = manifestRaw.phrases ?? manifestRaw;
           // Find the hash for our phrase
           const entry = Object.entries(manifest).find(
             ([, phrase]) => (phrase as string).toLowerCase().trim() === targetPhrase.toLowerCase().trim()

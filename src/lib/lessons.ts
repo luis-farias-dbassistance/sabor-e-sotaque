@@ -1,17 +1,32 @@
+export interface VocabularyItem {
+  word_pt: string;
+  word_es: string;
+  audioFile?: string;
+}
+
 export interface Lesson {
   id: string;
   phrase_pt: string;
   phrase_es: string;
   context: string;
   imageUrl: string;
+  // v2 additions
+  dialogue_trigger_pt?: string;
+  dialogue_trigger_es?: string;
+  speaker_role?: 'guide' | 'tourist' | 'receptionist' | 'agent';
+  difficulty?: 'básico' | 'intermedio' | 'avanzado';
 }
 
 export interface Module {
   id: string;
   title: string;
   subtitle: string;
-  category: 'gastronomy' | 'logistics' | 'adventure';
+  category: 'gastronomy' | 'logistics' | 'adventure' | 'security';
   lessons: Lesson[];
+  // v2 additions
+  vocabulary?: VocabularyItem[];
+  emoji?: string;
+  description?: string;
 }
 
 export const INITIAL_DATA: Record<string, Module> = {
@@ -103,6 +118,18 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "5-8", phrase_pt: "Aceitamos cartão de crédito e pagamento por aproximação.", phrase_es: "Aceptamos tarjeta de crédito y pago por contacto.", context: "Métodos de pago.", imageUrl: "https://images.unsplash.com/photo-1628527304948-06157ee3c8a6?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxjcmVkaXQlMjBjYXJkJTIwcGF5bWVudCUyMHRlcm1pbmFsJTIwaGFuZHxlbnwwfDB8fHwxNzc5NzM5Mjk2fDA&ixlib=rb-4.1.0" },
       { id: "5-9", phrase_pt: "Está muito frio, vou conseguir um cobertor extra para você.", phrase_es: "Hace mucho frío, voy a conseguir una manta extra para usted.", context: "Confort del pasajero.", imageUrl: "https://images.unsplash.com/photo-1630660664869-c9d3cc676880?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxleHRyYSUyMHdhcm0lMjBibGFua2V0JTIwaG90ZWwlMjBiZWR8ZW58MHwwfHx8MTc3OTczOTI5N3ww&ixlib=rb-4.1.0" },
       { id: "5-10", phrase_pt: "Vou enviar o técnico para consertar o chuveiro quente.", phrase_es: "Voy a enviar al técnico a reparar la ducha de agua caliente.", context: "Resolución de fallas.", imageUrl: "https://images.unsplash.com/photo-1613849925362-38fb4c16ff36?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxzaG93ZXIlMjByZXBhaXIlMjBwbHVtYmVyJTIwYmF0aHJvb218ZW58MHwwfHx8MTc3OTczOTI5OHww&ixlib=rb-4.1.0" }
+    ],
+    vocabulary: [
+      { word_pt: "reserva", word_es: "reserva" },
+      { word_pt: "check-in / check-out", word_es: "check-in / check-out" },
+      { word_pt: "diária", word_es: "tarifa diaria" },
+      { word_pt: "café da manhã", word_es: "desayuno" },
+      { word_pt: "senha do wi-fi", word_es: "contraseña del wi-fi" },
+      { word_pt: "cartão de acesso", word_es: "tarjeta de acceso" },
+      { word_pt: "serviço de quarto", word_es: "servicio a la habitación" },
+      { word_pt: "estacionamento", word_es: "estacionamiento" },
+      { word_pt: "berço", word_es: "cuna" },
+      { word_pt: "toalha", word_es: "toalla" },
     ]
   },
   "6": {
@@ -139,6 +166,18 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "7-8", phrase_pt: "Recomendamos fortemente contratar um seguro de viagem internacional.", phrase_es: "Recomendamos encarecidamente contratar un seguro de viaje internacional.", context: "Consejo de viaje.", imageUrl: "https://images.unsplash.com/photo-1581553673739-c4906b5d0de8?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBpbnN1cmFuY2UlMjBkb2N1bWVudCUyMHBhc3Nwb3J0fGVufDB8MHx8fDE3Nzk3MzkzMDZ8MA&ixlib=rb-4.1.0" },
       { id: "7-9", phrase_pt: "Podemos montar um itinerário sob medida para a sua família.", phrase_es: "Podemos armar un itinerario a la medida para su familia.", context: "Personalización.", imageUrl: "https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=800&q=80" },
       { id: "7-10", phrase_pt: "Qualquer dúvida, pode nos contatar por WhatsApp neste número.", phrase_es: "Cualquier duda, puede contactarnos por WhatsApp a este número.", context: "Atención post-venta.", imageUrl: "https://images.unsplash.com/photo-1729860649405-96dec89ec58b?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHx3aGF0c2FwcCUyMGNoYXQlMjBtb2JpbGUlMjBwaG9uZXxlbnwwfDB8fHwxNzc5NzM5MzA2fDA&ixlib=rb-4.1.0" }
+    ],
+    vocabulary: [
+      { word_pt: "reserva", word_es: "reserva" },
+      { word_pt: "confirmação", word_es: "confirmación" },
+      { word_pt: "cancelamento", word_es: "cancelación" },
+      { word_pt: "reembolso", word_es: "reembolso" },
+      { word_pt: "comprovante", word_es: "comprobante" },
+      { word_pt: "roteiro", word_es: "itinerario / ruta" },
+      { word_pt: "passeio", word_es: "excursión / paseo" },
+      { word_pt: "pacote turístico", word_es: "paquete turístico" },
+      { word_pt: "orçamento", word_es: "cotización / presupuesto" },
+      { word_pt: "ponto de encontro", word_es: "punto de encuentro" },
     ]
   },
   "8": {
@@ -193,6 +232,18 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "10-8", phrase_pt: "Não alimente os animais silvestres que encontrar pelo caminho.", phrase_es: "No alimente a los animales silvestres que encuentre en el camino.", context: "Fauna local.", imageUrl: "https://images.unsplash.com/photo-1765885615225-6ab530277c28?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxkbyUyMG5vdCUyMGZlZWQlMjB3aWxkbGlmZSUyMHNpZ24lMjB0cmFpbHxlbnwwfDB8fHwxNzc5NzM5MzEyfDA&ixlib=rb-4.1.0" },
       { id: "10-9", phrase_pt: "Faremos uma pausa curta para descansar e comer barras de cereal.", phrase_es: "Haremos una pausa corta para descansar y comer barras de cereal.", context: "Recuperación.", imageUrl: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&w=800&q=80" },
       { id: "10-10", phrase_pt: "Chegamos ao cume! A vista lá de cima compensa todo o esforço.", phrase_es: "¡Llegamos a la cumbre! La vista desde allá arriba compensa todo el esfuerzo.", context: "Logro.", imageUrl: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "trilha", word_es: "sendero / huella" },
+      { word_pt: "caminhada", word_es: "caminata" },
+      { word_pt: "montanha", word_es: "montaña" },
+      { word_pt: "subida / descida", word_es: "subida / bajada" },
+      { word_pt: "bastão de trekking", word_es: "bastón de trekking" },
+      { word_pt: "protetor solar", word_es: "protector solar" },
+      { word_pt: "altitude", word_es: "altitud" },
+      { word_pt: "mirante", word_es: "mirador" },
+      { word_pt: "parada", word_es: "parada / descanso" },
+      { word_pt: "cansaço", word_es: "cansancio" },
     ]
   },
   "11": {
@@ -210,7 +261,12 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "11-7", phrase_pt: "Fique calmo e mantenha o equilíbrio, o cavalo conhece bem este caminho.", phrase_es: "Mantenga la calma y el equilibrio, el caballo conoce bien este camino.", context: "Confianza.", imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80" },
       { id: "11-8", phrase_pt: "Durante as descidas íngremes, incline o corpo um pouco para trás.", phrase_es: "Durante las bajadas empinadas, incline el cuerpo un poco hacia atrás.", context: "Técnica de descenso.", imageUrl: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" },
       { id: "11-9", phrase_pt: "Não dê comida aos cavalos sem a autorização do guia responsável.", phrase_es: "No le dé comida a los caballos sin la autorización del guía responsable.", context: "Alimentación animal.", imageUrl: "https://images.unsplash.com/photo-1706384447818-ae16960ebfba?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxmZWVkaW5nJTIwaG9yc2UlMjBoYW5kJTIwdHJlYXR8ZW58MHwwfHx8MTc3OTczOTMxN3ww&ixlib=rb-4.1.0" },
-      { id: "11-10", phrase_pt: "Para descer do cavalo, espere que ele pare completamente e solte os pés dos estribos.", phrase_es: "Para bajar del caballo, espere que se detenga por completo y saque los pies de los estribos.", context: "Finalización.", imageUrl: "https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&w=800&q=80" }
+      { id: "11-10", phrase_pt: "Para descer do cavalo, espere que ele pare completamente e solte os pés dos estribos.", phrase_es: "Para bajar del caballo, espere que se detenga por completo y saque los pies de los estribos.", context: "Finalización.", imageUrl: "https://images.unsplash.com/photo-1598974357801-cbca100e65d3?auto=format&fit=crop&w=800&q=80" },
+      { id: "11-11", phrase_pt: "Por favor, usem o capacete durante todo o passeio. É obrigatório.", phrase_es: "Por favor, usen el casco durante todo el paseo. Es obligatorio.", context: "Instrucción de seguridad antes de montar.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1598711033236-3e0b403a14e8?auto=format&fit=crop&w=800&q=80" },
+      { id: "11-12", phrase_pt: "Para montar, coloque o pé esquerdo no estribo e impulsione-se para cima.", phrase_es: "Para montar, coloque el pie izquierdo en el estribo e impulse hacia arriba.", context: "Instrucción técnica para subir al caballo por primera vez.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1522575196731-217bd9006602?auto=format&fit=crop&w=800&q=80" },
+      { id: "11-13", phrase_pt: "Mantenham uma distância segura do cavalo da frente.", phrase_es: "Mantengan una distancia segura del caballo de adelante.", context: "Instrucción de seguridad durante la cabalgata en grupo.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80" },
+      { id: "11-14", phrase_pt: "Se o cavalo começar a trotar e você se sentir inseguro, puxe as rédeas suavemente.", phrase_es: "Si el caballo empieza a trotar y te sientes inseguro, jala las riendas suavemente.", context: "Respuesta a situación imprevista durante la cabalgata.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" },
+      { id: "11-15", phrase_pt: "Não gritem ou façam movimentos bruscos, isso pode assustar os cavalos.", phrase_es: "No griten ni hagan movimientos bruscos, esto puede asustar a los caballos.", context: "Norma de comportamiento durante toda la cabalgata.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=800&q=80" }
     ]
   },
   "12": {
@@ -247,6 +303,70 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "13-8", phrase_pt: "Aceitamos todos os cartões de crédito e carteiras digitais.", phrase_es: "Aceptamos todas las tarjetas de crédito y billeteras digitales.", context: "Medios de pago.", imageUrl: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80" },
       { id: "13-9", phrase_pt: "Recomendo provar a nossa torta de mil-folhas com doce de leite.", phrase_es: "Les recomiendo probar nuestra torta de milhojas con manjar.", context: "Postres recomendados.", imageUrl: "/images/lessons/13-9-milhojas.png" },
       { id: "13-10", phrase_pt: "O serviço de pães de boas-vindas é cortesia da casa.", phrase_es: "El servicio de pan de bienvenida es cortesía de la casa.", context: "Cortesías.", imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80" }
+    ]
+  },
+  "m14": {
+    id: "m14",
+    title: "Emergencias Turísticas",
+    subtitle: "Protocolo y Seguridad",
+    category: "security",
+    emoji: "🚨",
+    description: "Frases críticas para situaciones de emergencia con turistas brasileños en terreno.",
+    vocabulary: [
+      { word_pt: "emergência", word_es: "emergencia" },
+      { word_pt: "acidente", word_es: "accidente" },
+      { word_pt: "ferimento", word_es: "herida / lesión" },
+      { word_pt: "queda", word_es: "caída" },
+      { word_pt: "fratura", word_es: "fractura" },
+      { word_pt: "ambulância", word_es: "ambulancia" },
+      { word_pt: "evacuação", word_es: "evacuación" },
+      { word_pt: "primeiros socorros", word_es: "primeros auxilios" },
+      { word_pt: "resgate", word_es: "rescate" },
+      { word_pt: "mantenha a calma", word_es: "mantenga la calma" },
+    ],
+    lessons: [
+      { id: "m14-l01", phrase_pt: "Por favor, mantenham a calma.", phrase_es: "Por favor, mantengan la calma.", context: "Inicio de protocolo de emergencia con el grupo de turistas.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l02", phrase_pt: "Sigam as instruções do guia turístico.", phrase_es: "Sigan las instrucciones del guía turístico.", context: "Evacuación o incidente en terreno.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l03", phrase_pt: "A saída de emergência fica aqui.", phrase_es: "La salida de emergencia está aquí.", context: "Señalización física durante una evacuación.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l04", phrase_pt: "Não se afastem do grupo.", phrase_es: "No se alejen del grupo.", context: "Control del grupo en terreno durante incidente.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l05", phrase_pt: "Precisamos evacuar a área.", phrase_es: "Necesitamos evacuar el área.", context: "Emergencia activa: clima peligroso, accidente, zona de riesgo.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1529543544282-ea669407fca3?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l06", phrase_pt: "A ambulância está chegando.", phrase_es: "La ambulancia está llegando.", context: "Comunicación al turista o grupo tras llamar servicios de emergencia.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1516574187841-cb9cc2ca948b?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l07", phrase_pt: "Precisa de ajuda médica?", phrase_es: "¿Necesita ayuda médica?", context: "Evaluación inicial de un turista lesionado o con malestar.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l08", phrase_pt: "O guia está verificando a situação.", phrase_es: "El guía está verificando la situación.", context: "Comunicación al grupo mientras el guía evalúa un incidente.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l09", phrase_pt: "O clima está perigoso para o passeio.", phrase_es: "El clima está peligroso para el paseo.", context: "Cancelación o suspensión de actividad por condiciones climáticas.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1504608524841-42523e977e8c?auto=format&fit=crop&w=800&q=80" },
+      { id: "m14-l10", phrase_pt: "Esperem aqui até novas instruções.", phrase_es: "Esperen aquí hasta nuevas instrucciones.", context: "Punto de reunión de espera mientras se resuelve la emergencia.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1520880867055-1e30d1cb001c?auto=format&fit=crop&w=800&q=80" }
+    ]
+  },
+  "m15": {
+    id: "m15",
+    title: "Rafting & Kayak",
+    subtitle: "Aguas Bravas y Seguridad",
+    category: "adventure",
+    emoji: "🚣",
+    description: "Instrucciones de seguridad y comandos esenciales para guías de rafting y kayak.",
+    vocabulary: [
+      { word_pt: "bote inflável", word_es: "balsa inflable" },
+      { word_pt: "remo", word_es: "remo" },
+      { word_pt: "colete salva-vidas", word_es: "chaleco salvavidas" },
+      { word_pt: "capacete", word_es: "casco" },
+      { word_pt: "corredeira", word_es: "rápido / raudal" },
+      { word_pt: "correnteza", word_es: "corriente" },
+      { word_pt: "embarque", word_es: "embarque" },
+      { word_pt: "equilíbrio", word_es: "equilibrio" },
+      { word_pt: "nível de dificuldade", word_es: "nivel de dificultad" },
+      { word_pt: "percurso", word_es: "recorrido / trayecto" },
+    ],
+    lessons: [
+      { id: "m15-l01", phrase_pt: "Por favor, vistam o colete salva-vidas e ajustem bem.", phrase_es: "Por favor, pónganse el chaleco salvavidas y ajústenlo bien.", context: "Instrucción de equipamiento antes de iniciar la actividad de rafting.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l02", phrase_pt: "Coloquem o capacete e apertem a fivela, é obrigatório.", phrase_es: "Pónganse el casco y abrochen la hebilla, es obligatorio.", context: "Instrucción de equipamiento de seguridad obligatorio.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l03", phrase_pt: "Quando eu disser frente, remem com força para a frente.", phrase_es: "Cuando diga adelante, remen con fuerza hacia adelante.", context: "Enseñanza del comando de remo principal durante el briefing.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l04", phrase_pt: "Quando eu disser trás, remem para trás em sincronia.", phrase_es: "Cuando diga atrás, remen hacia atrás en sincronía.", context: "Enseñanza del comando de remo inverso durante el briefing.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l05", phrase_pt: "Segurem firme na corda interna do bote se a água balançar muito.", phrase_es: "Sujétense fuerte de la cuerda interna de la balsa si el agua se mueve mucho.", context: "Instrucción de seguridad para pasar rápidos con agitación.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l06", phrase_pt: "Se alguém cair na água, mantenha a calma e deite de barriga para cima.", phrase_es: "Si alguien cae al agua, mantenga la calma y recuéstese boca arriba.", context: "Protocolo de caída al agua — instrucción crítica de seguridad.", difficulty: "avanzado", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l07", phrase_pt: "Todos para dentro!", phrase_es: "¡Todos adentro!", context: "Comando de emergencia para refugiarse dentro de la balsa en un rápido.", difficulty: "avanzado", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l08", phrase_pt: "Prestem muita atenção aos meus comandos durante toda a descida.", phrase_es: "Presten mucha atención a mis comandos durante toda la bajada.", context: "Instrucción general al inicio del descenso.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l09", phrase_pt: "O passeio é seguro. Não é necessário saber nadar.", phrase_es: "El paseo es seguro. No es necesario saber nadar.", context: "Respuesta a pregunta frecuente del turista antes de comenzar.", difficulty: "básico", speaker_role: "guide", dialogue_trigger_pt: "O passeio é seguro? Precisa saber nadar para fazer o rafting?", dialogue_trigger_es: "¿El paseo es seguro? ¿Se necesita saber nadar para el rafting?", imageUrl: "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?auto=format&fit=crop&w=800&q=80" },
+      { id: "m15-l10", phrase_pt: "A água é muito fria. Recomendamos roupa de neoprene.", phrase_es: "El agua es muy fría. Recomendamos traje de neopreno.", context: "Recomendación de equipamiento al turista según temperatura del río.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80" }
     ]
   }
 };

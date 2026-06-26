@@ -115,11 +115,52 @@ async function audioExistsInS3(bucket, key) {
   }
 }
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function getVocabFromLessons() {
+  const filePath = path.join(__dirname, '../src/lib/lessons.ts');
+  const content = fs.readFileSync(filePath, 'utf8');
+
+  // Extract vocabulary blocks: vocabulary: [ { word_pt: "...", word_es: "..." }, ... ]
+  const vocab = {}; // { moduleId: [ { word_pt, word_es } ] }
+
+  // Find module IDs and their vocabulary sections
+  const moduleMatches = [...content.matchAll(/"([\w\d]+)":\s*\{[^}]*?id:\s*"([\w\d]+)"[^}]*?vocabulary:\s*\[([\s\S]*?)\]/g)];
+  
+  // Alternative: parse per module block
+  const moduleBlocks = content.split(/(?="m?\d+"\s*:)/);
+  
+  for (const block of moduleBlocks) {
+    const idMatch = block.match(/id:\s*"([\w-]+)"/);
+    if (!idMatch) continue;
+    const moduleId = idMatch[1];
+
+    // Find vocabulary array in this block
+    const vocabMatch = block.match(/vocabulary:\s*\[([\s\S]*?)\]/);
+    if (!vocabMatch) continue;
+
+    const vocabContent = vocabMatch[1];
+    const wordMatches = [...vocabContent.matchAll(/word_pt:\s*"([^"]+)"/g)];
+    
+    if (wordMatches.length > 0) {
+      vocab[moduleId] = wordMatches.map(m => m[1]);
+    }
+  }
+
+  return vocab;
+}
+
 async function main() {
   const bucket = await getBucketName();
   const audioDir = path.join(__dirname, '../public/audio');
   
-  // Ensure local output directory exists
   if (!fs.existsSync(audioDir)) {
     fs.mkdirSync(audioDir, { recursive: true });
   }
@@ -133,6 +174,7 @@ async function main() {
   let generated = 0;
   let skipped = 0;
 
+  // ── 1. Generate phrase audio ──────────────────────────────────────────────
   for (const phrase of PHRASES) {
     const hash = hashPhrase(phrase);
     const filename = `${hash}.mp3`;
@@ -140,7 +182,6 @@ async function main() {
     const key = `audio/${filename}`;
     const shortPhrase = phrase.substring(0, 50) + (phrase.length > 50 ? '...' : '');
 
-    // Skip if already exists locally
     if (fs.existsSync(localPath)) {
       console.log(`  ⏭️  [existe local] ${shortPhrase}`);
       skipped++;
@@ -149,62 +190,106 @@ async function main() {
 
     try {
       const audioBuffer = await synthesize(phrase);
-      
-      // Save locally
       fs.writeFileSync(localPath, audioBuffer);
       console.log(`  ✅ [Guardado Local - ${(audioBuffer.length / 1024).toFixed(1)}KB] ${shortPhrase}`);
       
-      // Upload to S3 if bucket is available
       if (bucket) {
         try {
           await s3.send(new PutObjectCommand({
-            Bucket: bucket,
-            Key: key,
-            Body: audioBuffer,
-            ContentType: 'audio/mpeg',
-            CacheControl: 'max-age=31536000', // 1 year cache
+            Bucket: bucket, Key: key, Body: audioBuffer,
+            ContentType: 'audio/mpeg', CacheControl: 'max-age=31536000',
           }));
           console.log(`     📤 Subido a S3: ${key}`);
         } catch (s3Err) {
           console.error(`     ⚠️  Error subiendo a S3: ${s3Err.message}`);
         }
       }
-      
       generated++;
     } catch (err) {
       console.error(`  ❌ Error sintetizando: ${shortPhrase} — ${err.message}`);
     }
   }
 
-  // Generate the audio manifest (hash → phrase mapping)
-  const manifest = {};
-  for (const phrase of PHRASES) {
-    manifest[hashPhrase(phrase)] = phrase;
+  // ── 2. Generate vocabulary audio ──────────────────────────────────────────
+  console.log(`\n📚 Generando audio de vocabulario...\n`);
+  const vocabData = getVocabFromLessons();
+  const vocabManifest = {};
+  let vocabGenerated = 0;
+  let vocabSkipped = 0;
+
+  for (const [moduleId, words] of Object.entries(vocabData)) {
+    const vocabDir = path.join(audioDir, 'vocab', moduleId);
+    if (!fs.existsSync(vocabDir)) {
+      fs.mkdirSync(vocabDir, { recursive: true });
+    }
+    vocabManifest[moduleId] = {};
+
+    for (const word of words) {
+      const slug = slugify(word);
+      const filename = `${slug}.mp3`;
+      const localPath = path.join(vocabDir, filename);
+      const relativePath = `/audio/vocab/${moduleId}/${filename}`;
+      const s3Key = `audio/vocab/${moduleId}/${filename}`;
+
+      vocabManifest[moduleId][word] = relativePath;
+
+      if (fs.existsSync(localPath)) {
+        console.log(`  ⏭️  [vocab existe] ${moduleId}/${word}`);
+        vocabSkipped++;
+        continue;
+      }
+
+      try {
+        const audioBuffer = await synthesize(word);
+        fs.writeFileSync(localPath, audioBuffer);
+        console.log(`  ✅ [vocab generado] ${moduleId}/${word}`);
+
+        if (bucket) {
+          try {
+            await s3.send(new PutObjectCommand({
+              Bucket: bucket, Key: s3Key, Body: audioBuffer,
+              ContentType: 'audio/mpeg', CacheControl: 'max-age=31536000',
+            }));
+          } catch (s3Err) {
+            console.error(`     ⚠️  Error vocab S3: ${s3Err.message}`);
+          }
+        }
+        vocabGenerated++;
+      } catch (err) {
+        console.error(`  ❌ Error vocab: ${word} — ${err.message}`);
+      }
+    }
   }
-  
+
+  // ── 3. Write updated manifest ─────────────────────────────────────────────
+  const phraseManifest = {};
+  for (const phrase of PHRASES) {
+    phraseManifest[hashPhrase(phrase)] = phrase;
+  }
+
+  const fullManifest = { phrases: phraseManifest, vocabulary: vocabManifest };
   const manifestPath = path.join(audioDir, 'manifest.json');
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-  console.log(`  ✅ Manifiesto guardado en local: public/audio/manifest.json`);
+  fs.writeFileSync(manifestPath, JSON.stringify(fullManifest, null, 2));
+  console.log(`  ✅ Manifiesto guardado: public/audio/manifest.json`);
 
   if (bucket) {
     try {
       await s3.send(new PutObjectCommand({
-        Bucket: bucket,
-        Key: 'audio/manifest.json',
-        Body: JSON.stringify(manifest, null, 2),
-        ContentType: 'application/json',
+        Bucket: bucket, Key: 'audio/manifest.json',
+        Body: JSON.stringify(fullManifest, null, 2), ContentType: 'application/json',
       }));
       console.log(`  📤 Manifiesto subido a S3`);
     } catch (s3Err) {
-      console.error(`  ⚠️  Error subiendo manifiesto a S3: ${s3Err.message}`);
+      console.error(`  ⚠️  Error subiendo manifiesto: ${s3Err.message}`);
     }
   }
 
   console.log(`\n================================================`);
-  console.log(`  ✅ Generados: ${generated}`);
-  console.log(`  ⏭️  Ya existían: ${skipped}`);
-  console.log(`  💰 Costo estimado Polly: ~$${(generated * 0.004).toFixed(2)}`);
+  console.log(`  Frases — ✅ Generadas: ${generated}  ⏭️  Existían: ${skipped}`);
+  console.log(`  Vocab  — ✅ Generadas: ${vocabGenerated}  ⏭️  Existían: ${vocabSkipped}`);
+  console.log(`  💰 Costo estimado Polly: ~$${((generated + vocabGenerated) * 0.004).toFixed(2)}`);
   console.log(`================================================\n`);
 }
 
 main().catch(console.error);
+
