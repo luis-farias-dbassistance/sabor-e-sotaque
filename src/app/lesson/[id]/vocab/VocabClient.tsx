@@ -101,7 +101,7 @@ export default function VocabClient({ moduleId }: Props) {
       {/* Header */}
       <div className="p-4 md:p-6 flex items-center justify-between sticky top-0 bg-black/80 backdrop-blur-md z-10 border-b border-zinc-900">
         <button
-          onClick={() => router.push(`/lesson/${moduleId}`)}
+          onClick={() => router.back()}
           className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
