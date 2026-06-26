@@ -81,6 +81,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "2-8", phrase_pt: "Os acompanhamentos são à parte ou prefere um prato combinado?", phrase_es: "¿Los acompañamientos son aparte o prefiere un plato combinado?", context: "Guarniciones.", imageUrl: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxzaWRlJTIwZGlzaGVzJTIwdmVnZXRhYmxlcyUyMHNlcGFyYXRlJTIwYm93bHN8ZW58MHwwfHx8MTc3OTczOTI4N3ww&ixlib=rb-4.1.0" },
       { id: "2-9", phrase_pt: "Esta carne é maturada por vinte e um dias.", phrase_es: "Esta carne es madurada por veintiún días.", context: "Calidad.", imageUrl: "https://images.unsplash.com/photo-1626132662510-34c4b521e0a0?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxkcnklMjBhZ2VkJTIwYmVlZiUyMG1lYXQlMjBoYW5naW5nfGVufDB8MHx8fDE3Nzk3MzkyODh8MA&ixlib=rb-4.1.0" },
       { id: "2-10", phrase_pt: "Recomendo a nossa Parrillada para compartilhar.", phrase_es: "Recomiendo nuestra Parrillada para compartir.", context: "Recomendación.", imageUrl: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "parrilla", word_es: "parrilla / asador" },
+      { word_pt: "carne", word_es: "carne" },
+      { word_pt: "ponto da carne", word_es: "punto de cocción" },
+      { word_pt: "mal passado", word_es: "poco cocida / jugosa" },
+      { word_pt: "ao ponto", word_es: "a punto / término medio" },
+      { word_pt: "bem passado", word_es: "bien cocida" },
+      { word_pt: "Lomo Vetado", word_es: "Contrafilé / Entrecot" },
+      { word_pt: "Punta de Ganso", word_es: "Picanha" },
+      { word_pt: "acompanhamentos", word_es: "acompañamientos / guarnición" },
+      { word_pt: "maturado", word_es: "madurado" },
+      { word_pt: "gordura", word_es: "grasa" },
+      { word_pt: "Parrillada", word_es: "Parrillada" },
     ]
   },
   "3": {
@@ -99,6 +113,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "3-8", phrase_pt: "Gostariam de acompanhar com uma taça de vinho tinto da casa?", phrase_es: "¿Desean acompañarlo con una copa de vino tinto de la casa?", context: "Maridaje.", imageUrl: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=800&q=80" },
       { id: "3-9", phrase_pt: "Este prato é servido em uma tigela de greda quente.", phrase_es: "Este plato se sirve en un pocillo de greda caliente.", context: "Presentación.", imageUrl: "/images/lessons/3-9-pocillo.png" },
       { id: "3-10", phrase_pt: "Desejam o molho pebre? É um pouco picante.", phrase_es: "¿Desean salsa pebre? Es un poco picante.", context: "Condimento.", imageUrl: "/images/lessons/3-10-pebre.png" }
+    ],
+    vocabulary: [
+      { word_pt: "empanada", word_es: "empanada" },
+      { word_pt: "cazuela", word_es: "cazuela" },
+      { word_pt: "pastel de choclo", word_es: "pastel de choclo" },
+      { word_pt: "humita", word_es: "humita" },
+      { word_pt: "molho pebre", word_es: "salsa pebre" },
+      { word_pt: "recheio", word_es: "relleno" },
+      { word_pt: "picante", word_es: "picante" },
+      { word_pt: "assado", word_es: "asado" },
+      { word_pt: "forno", word_es: "horno" },
+      { word_pt: "milho", word_es: "maíz / choclo" },
+      { word_pt: "cebola", word_es: "cebolla" },
+      { word_pt: "tempero", word_es: "condimento / aliño" },
     ]
   },
   "4": {
@@ -116,7 +144,21 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "4-7", phrase_pt: "O Caldillo de Congrio é uma sopa de peixe muito rica.", phrase_es: "El Caldillo de Congrio es una sopa de pescado muy rica.", context: "Poesía/Cultura.", imageUrl: "/images/lessons/4-7-caldillo-congrio.png" },
       { id: "4-8", phrase_pt: "Temos cervejas artesanais chilenas muito boas.", phrase_es: "Tenemos cervezas artesanales chilenas muy buenas.", context: "Cerveza.", imageUrl: "https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=800&q=80" },
       { id: "4-9", phrase_pt: "O sanduíche é servido em pão frica ou marraqueta?", phrase_es: "¿El sándwich se sirve en pan frica o marraqueta?", context: "Pan.", imageUrl: "/images/lessons/4-9-marraqueta.png" },
-      { id: "4-10", phrase_pt: "Desejam maionese caseira? É a nossa especialidade.", phrase_es: "¿Desean mayonesa casera? Es nuestra especialidad.", context: "Tip.", imageUrl: "/images/lessons/4-10-mayonesa.png" },
+      { id: "4-10", phrase_pt: "Desejam maionese caseira? É a nossa especialidade.", phrase_es: "¿Desean mayonesa casera? Es nuestra especialidad.", context: "Tip.", imageUrl: "/images/lessons/4-10-mayonesa.png" }
+    ],
+    vocabulary: [
+      { word_pt: "churrasco", word_es: "churrasco" },
+      { word_pt: "completo", word_es: "completo (hot dog chileno)" },
+      { word_pt: "barros luco", word_es: "barros luco" },
+      { word_pt: "maionese", word_es: "mayonesa" },
+      { word_pt: "pão", word_es: "pan" },
+      { word_pt: "frutos do mar", word_es: "mariscos" },
+      { word_pt: "lula", word_es: "calamar" },
+      { word_pt: "camarão", word_es: "camarón" },
+      { word_pt: "salmão", word_es: "salmón" },
+      { word_pt: "grelhado", word_es: "a la plancha / grillado" },
+      { word_pt: "cebola caramelizada", word_es: "cebolla caramelizada" },
+      { word_pt: "temperos", word_es: "condimentos" },
     ]
   },
   "5": {
@@ -177,6 +219,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "6-8", phrase_pt: "O embarque será realizado pelo portão número três.", phrase_es: "El embarque se realizará por la puerta número tres.", context: "Terminal.", imageUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=800&q=80" },
       { id: "6-9", phrase_pt: "Motorista, por favor, vá com calma e respeite o limite de velocidade.", phrase_es: "Chofer, por favor vaya con cuidado y respete el límite de velocidad.", context: "Seguridad vial.", imageUrl: "https://images.unsplash.com/photo-1657844389497-166c81c6ee5b?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxzcGVlZCUyMGxpbWl0JTIwc2lnbiUyMHJvYWR8ZW58MHwwfHx8MTc3OTczOTMwMXww&ixlib=rb-4.1.0" },
       { id: "6-10", phrase_pt: "Há um pouco de trânsito no centro devido a obras na pista.", phrase_es: "Hay un poco de tráfico en el centro debido a obras en la calle.", context: "Estado de la ruta.", imageUrl: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "traslado", word_es: "traslado" },
+      { word_pt: "motorista", word_es: "chofer / conductor" },
+      { word_pt: "ponto de encontro", word_es: "punto de encuentro" },
+      { word_pt: "horário de saída", word_es: "horario de salida" },
+      { word_pt: "horário de retorno", word_es: "horario de regreso" },
+      { word_pt: "bagagem", word_es: "equipaje" },
+      { word_pt: "cinto de segurança", word_es: "cinturón de seguridad" },
+      { word_pt: "aeroporto", word_es: "aeropuerto" },
+      { word_pt: "terminal rodoviário", word_es: "terminal de buses" },
+      { word_pt: "embarque", word_es: "embarque" },
+      { word_pt: "trânsito", word_es: "tráfico" },
+      { word_pt: "tarifa", word_es: "tarifa / precio" },
     ]
   },
   "7": {
@@ -236,6 +292,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "8-8", phrase_pt: "Agora vocês têm uma hora livre para caminhar pelo parque.", phrase_es: "Ahora tienen una hora libre para caminar por el parque.", context: "Recreación.", imageUrl: "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80" },
       { id: "8-9", phrase_pt: "Recomendo comprar artesanato local na feira que fica logo ali.", phrase_es: "Recomiendo comprar artesanías locales en la feria que queda justo allí.", context: "Sugerencia de compras.", imageUrl: "https://images.unsplash.com/photo-1533900298318-6b8da08a523e?auto=format&fit=crop&w=800&q=80" },
       { id: "8-10", phrase_pt: "Muito obrigado pela companhia de todos! Espero que tenham gostado.", phrase_es: "¡Muchas gracias por la compañía de todos! Espero que les haya gustado.", context: "Cierre del tour.", imageUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "guia turístico", word_es: "guía turístico" },
+      { word_pt: "guia local", word_es: "guía local" },
+      { word_pt: "visita guiada", word_es: "visita guiada" },
+      { word_pt: "grupo turístico", word_es: "grupo turístico" },
+      { word_pt: "patrimônio cultural", word_es: "patrimonio cultural" },
+      { word_pt: "patrimônio natural", word_es: "patrimonio natural" },
+      { word_pt: "mirante", word_es: "mirador" },
+      { word_pt: "ponto turístico", word_es: "atractivo turístico" },
+      { word_pt: "explicação", word_es: "explicación" },
+      { word_pt: "história", word_es: "historia" },
+      { word_pt: "fotografia", word_es: "fotografía" },
+      { word_pt: "duração", word_es: "duración" },
     ]
   },
   "9": {
@@ -254,6 +324,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "9-8", phrase_pt: "Os ingressos para o parque já estão inclusos no seu pacote.", phrase_es: "Las entradas al parque ya están incluidas en su paquete.", context: "Inclusiones.", imageUrl: "https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&w=800&q=80" },
       { id: "9-9", phrase_pt: "Temos um passeio opcional de barco, o valor é pago diretamente na bilheteria.", phrase_es: "Tenemos un paseo opcional en bote, el valor se paga directamente en la boletería.", context: "Servicio extra.", imageUrl: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=800&q=80" },
       { id: "9-10", phrase_pt: "Esperamos que tenham tido uma experiência fantástica. Avaliem-nos no site!", phrase_es: "Esperamos que hayan tenido una experiencia fantástica. ¡Califíquenos en el sitio!", context: "Encuesta de satisfacción.", imageUrl: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "operadora de turismo", word_es: "operadora de turismo" },
+      { word_pt: "pacote turístico", word_es: "paquete turístico" },
+      { word_pt: "excursão", word_es: "excursión" },
+      { word_pt: "itinerário", word_es: "itinerario" },
+      { word_pt: "circuito", word_es: "circuito" },
+      { word_pt: "reserva", word_es: "reserva" },
+      { word_pt: "confirmação", word_es: "confirmación" },
+      { word_pt: "avaliação", word_es: "evaluación / reseña" },
+      { word_pt: "satisfação", word_es: "satisfacción" },
+      { word_pt: "experiência personalizada", word_es: "experiencia personalizada" },
+      { word_pt: "destino", word_es: "destino" },
+      { word_pt: "temporada", word_es: "temporada" },
     ]
   },
   "10": {
@@ -327,6 +411,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "11-13", phrase_pt: "Mantenham uma distância segura do cavalo da frente.", phrase_es: "Mantengan una distancia segura del caballo de adelante.", context: "Instrucción de seguridad durante la cabalgata en grupo.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=800&q=80" },
       { id: "11-14", phrase_pt: "Se o cavalo começar a trotar e você se sentir inseguro, puxe as rédeas suavemente.", phrase_es: "Si el caballo empieza a trotar y te sientes inseguro, jala las riendas suavemente.", context: "Respuesta a situación imprevista durante la cabalgata.", difficulty: "intermedio", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" },
       { id: "11-15", phrase_pt: "Não gritem ou façam movimentos bruscos, isso pode assustar os cavalos.", phrase_es: "No griten ni hagan movimientos bruscos, esto puede asustar a los caballos.", context: "Norma de comportamiento durante toda la cabalgata.", difficulty: "básico", speaker_role: "guide", imageUrl: "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "cavalo", word_es: "caballo" },
+      { word_pt: "rédeas", word_es: "riendas" },
+      { word_pt: "estribo", word_es: "estribo" },
+      { word_pt: "capacete", word_es: "casco" },
+      { word_pt: "sela", word_es: "silla de montar" },
+      { word_pt: "trote", word_es: "trote" },
+      { word_pt: "galope", word_es: "galope" },
+      { word_pt: "passo", word_es: "paso" },
+      { word_pt: "distância segura", word_es: "distancia segura" },
+      { word_pt: "instrutor", word_es: "instructor" },
+      { word_pt: "trilha equestre", word_es: "sendero ecuestre" },
+      { word_pt: "paisagem", word_es: "paisaje" },
     ]
   },
   "12": {
@@ -345,6 +443,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "12-8", phrase_pt: "Por favor, limpe a areia ou neve antes de entregar o equipamento.", phrase_es: "Por favor, limpie la arena o nieve antes de entregar el equipo.", context: "Cuidado del equipo.", imageUrl: "/images/lessons/12-8-skiing.png" },
       { id: "12-9", phrase_pt: "O aluguel da prancha já inclui os óculos de proteção e o capacete.", phrase_es: "El arriendo de la tabla ya incluye las gafas de protección y el casco.", context: "Accesorios incluidos.", imageUrl: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=800&q=80" },
       { id: "12-10", phrase_pt: "Guarde este recibo para poder retirar o seu depósito na saída.", phrase_es: "Guarde este recibo para poder retirar su depósito a la salida.", context: "Recibo técnico.", imageUrl: "https://images.unsplash.com/photo-1648823161626-0e839927401b?ixid=M3w5NjA4MDJ8MHwxfHNlYXJjaHwxfHxyZWNlaXB0JTIwZGVwb3NpdCUyMHJlZnVuZCUyMHBhcGVyfGVufDB8MHx8fDE3Nzk3MzkzMjN8MA&ixlib=rb-4.1.0" }
+    ],
+    vocabulary: [
+      { word_pt: "aluguel", word_es: "arriendo / alquiler" },
+      { word_pt: "equipamento", word_es: "equipamiento" },
+      { word_pt: "botas", word_es: "botas" },
+      { word_pt: "prancha", word_es: "tabla (esquí/snowboard)" },
+      { word_pt: "capacete", word_es: "casco" },
+      { word_pt: "depósito", word_es: "depósito" },
+      { word_pt: "recibo", word_es: "recibo" },
+      { word_pt: "tamanho", word_es: "talla / tamaño" },
+      { word_pt: "devolução", word_es: "devolución" },
+      { word_pt: "dano", word_es: "daño" },
+      { word_pt: "óculos de proteção", word_es: "gafas de protección" },
+      { word_pt: "neve", word_es: "nieve" },
     ]
   },
   "13": {
@@ -363,6 +475,20 @@ export const INITIAL_DATA: Record<string, Module> = {
       { id: "13-8", phrase_pt: "Aceitamos todos os cartões de crédito e carteiras digitais.", phrase_es: "Aceptamos todas las tarjetas de crédito y billeteras digitales.", context: "Medios de pago.", imageUrl: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=800&q=80" },
       { id: "13-9", phrase_pt: "Recomendo provar a nossa torta de mil-folhas com doce de leite.", phrase_es: "Les recomiendo probar nuestra torta de milhojas con manjar.", context: "Postres recomendados.", imageUrl: "/images/lessons/13-9-milhojas.png" },
       { id: "13-10", phrase_pt: "O serviço de pães de boas-vindas é cortesia da casa.", phrase_es: "El servicio de pan de bienvenida es cortesía de la casa.", context: "Cortesías.", imageUrl: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80" }
+    ],
+    vocabulary: [
+      { word_pt: "cardápio", word_es: "carta / menú" },
+      { word_pt: "prato do dia", word_es: "plato del día" },
+      { word_pt: "degustação", word_es: "degustación" },
+      { word_pt: "vinho", word_es: "vino" },
+      { word_pt: "azeite de oliva", word_es: "aceite de oliva" },
+      { word_pt: "alergia alimentar", word_es: "alergia alimentaria" },
+      { word_pt: "restrição alimentar", word_es: "restricción alimentaria" },
+      { word_pt: "espresso", word_es: "espresso" },
+      { word_pt: "taxa de serviço", word_es: "cargo por servicio" },
+      { word_pt: "sobremesa", word_es: "postre" },
+      { word_pt: "cortesia da casa", word_es: "cortesía de la casa" },
+      { word_pt: "pão de boas-vindas", word_es: "pan de bienvenida" },
     ]
   },
   "m14": {

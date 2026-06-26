@@ -184,6 +184,48 @@
       "sobremesa": "/audio/vocab/1/sobremesa.mp3",
       "gorjeta": "/audio/vocab/1/gorjeta.mp3"
     },
+    "2": {
+      "parrilla": "/audio/vocab/2/parrilla.mp3",
+      "carne": "/audio/vocab/2/carne.mp3",
+      "ponto da carne": "/audio/vocab/2/ponto-da-carne.mp3",
+      "mal passado": "/audio/vocab/2/mal-passado.mp3",
+      "ao ponto": "/audio/vocab/2/ao-ponto.mp3",
+      "bem passado": "/audio/vocab/2/bem-passado.mp3",
+      "Lomo Vetado": "/audio/vocab/2/lomo-vetado.mp3",
+      "Punta de Ganso": "/audio/vocab/2/punta-de-ganso.mp3",
+      "acompanhamentos": "/audio/vocab/2/acompanhamentos.mp3",
+      "maturado": "/audio/vocab/2/maturado.mp3",
+      "gordura": "/audio/vocab/2/gordura.mp3",
+      "Parrillada": "/audio/vocab/2/parrillada.mp3"
+    },
+    "3": {
+      "empanada": "/audio/vocab/3/empanada.mp3",
+      "cazuela": "/audio/vocab/3/cazuela.mp3",
+      "pastel de choclo": "/audio/vocab/3/pastel-de-choclo.mp3",
+      "humita": "/audio/vocab/3/humita.mp3",
+      "molho pebre": "/audio/vocab/3/molho-pebre.mp3",
+      "recheio": "/audio/vocab/3/recheio.mp3",
+      "picante": "/audio/vocab/3/picante.mp3",
+      "assado": "/audio/vocab/3/assado.mp3",
+      "forno": "/audio/vocab/3/forno.mp3",
+      "milho": "/audio/vocab/3/milho.mp3",
+      "cebola": "/audio/vocab/3/cebola.mp3",
+      "tempero": "/audio/vocab/3/tempero.mp3"
+    },
+    "4": {
+      "churrasco": "/audio/vocab/4/churrasco.mp3",
+      "completo": "/audio/vocab/4/completo.mp3",
+      "barros luco": "/audio/vocab/4/barros-luco.mp3",
+      "maionese": "/audio/vocab/4/maionese.mp3",
+      "pão": "/audio/vocab/4/pao.mp3",
+      "frutos do mar": "/audio/vocab/4/frutos-do-mar.mp3",
+      "lula": "/audio/vocab/4/lula.mp3",
+      "camarão": "/audio/vocab/4/camarao.mp3",
+      "salmão": "/audio/vocab/4/salmao.mp3",
+      "grelhado": "/audio/vocab/4/grelhado.mp3",
+      "cebola caramelizada": "/audio/vocab/4/cebola-caramelizada.mp3",
+      "temperos": "/audio/vocab/4/temperos.mp3"
+    },
     "5": {
       "hospedagem": "/audio/vocab/5/hospedagem.mp3",
       "hotel": "/audio/vocab/5/hotel.mp3",
@@ -208,6 +250,20 @@
       "disponibilidade": "/audio/vocab/5/disponibilidade.mp3",
       "acomodação": "/audio/vocab/5/acomodacao.mp3"
     },
+    "6": {
+      "traslado": "/audio/vocab/6/traslado.mp3",
+      "motorista": "/audio/vocab/6/motorista.mp3",
+      "ponto de encontro": "/audio/vocab/6/ponto-de-encontro.mp3",
+      "horário de saída": "/audio/vocab/6/horario-de-saida.mp3",
+      "horário de retorno": "/audio/vocab/6/horario-de-retorno.mp3",
+      "bagagem": "/audio/vocab/6/bagagem.mp3",
+      "cinto de segurança": "/audio/vocab/6/cinto-de-seguranca.mp3",
+      "aeroporto": "/audio/vocab/6/aeroporto.mp3",
+      "terminal rodoviário": "/audio/vocab/6/terminal-rodoviario.mp3",
+      "embarque": "/audio/vocab/6/embarque.mp3",
+      "trânsito": "/audio/vocab/6/transito.mp3",
+      "tarifa": "/audio/vocab/6/tarifa.mp3"
+    },
     "7": {
       "reserva": "/audio/vocab/7/reserva.mp3",
       "confirmação": "/audio/vocab/7/confirmacao.mp3",
@@ -231,6 +287,34 @@
       "voucher": "/audio/vocab/7/voucher.mp3",
       "seguro viagem": "/audio/vocab/7/seguro-viagem.mp3"
     },
+    "8": {
+      "guia turístico": "/audio/vocab/8/guia-turistico.mp3",
+      "guia local": "/audio/vocab/8/guia-local.mp3",
+      "visita guiada": "/audio/vocab/8/visita-guiada.mp3",
+      "grupo turístico": "/audio/vocab/8/grupo-turistico.mp3",
+      "patrimônio cultural": "/audio/vocab/8/patrimonio-cultural.mp3",
+      "patrimônio natural": "/audio/vocab/8/patrimonio-natural.mp3",
+      "mirante": "/audio/vocab/8/mirante.mp3",
+      "ponto turístico": "/audio/vocab/8/ponto-turistico.mp3",
+      "explicação": "/audio/vocab/8/explicacao.mp3",
+      "história": "/audio/vocab/8/historia.mp3",
+      "fotografia": "/audio/vocab/8/fotografia.mp3",
+      "duração": "/audio/vocab/8/duracao.mp3"
+    },
+    "9": {
+      "operadora de turismo": "/audio/vocab/9/operadora-de-turismo.mp3",
+      "pacote turístico": "/audio/vocab/9/pacote-turistico.mp3",
+      "excursão": "/audio/vocab/9/excursao.mp3",
+      "itinerário": "/audio/vocab/9/itinerario.mp3",
+      "circuito": "/audio/vocab/9/circuito.mp3",
+      "reserva": "/audio/vocab/9/reserva.mp3",
+      "confirmação": "/audio/vocab/9/confirmacao.mp3",
+      "avaliação": "/audio/vocab/9/avaliacao.mp3",
+      "satisfação": "/audio/vocab/9/satisfacao.mp3",
+      "experiência personalizada": "/audio/vocab/9/experiencia-personalizada.mp3",
+      "destino": "/audio/vocab/9/destino.mp3",
+      "temporada": "/audio/vocab/9/temporada.mp3"
+    },
     "10": {
       "trilha": "/audio/vocab/10/trilha.mp3",
       "caminhada": "/audio/vocab/10/caminhada.mp3",
@@ -252,6 +336,48 @@
       "percurso": "/audio/vocab/10/percurso.mp3",
       "calçado": "/audio/vocab/10/calcado.mp3",
       "ônibus turístico": "/audio/vocab/10/onibus-turistico.mp3"
+    },
+    "11": {
+      "cavalo": "/audio/vocab/11/cavalo.mp3",
+      "rédeas": "/audio/vocab/11/redeas.mp3",
+      "estribo": "/audio/vocab/11/estribo.mp3",
+      "capacete": "/audio/vocab/11/capacete.mp3",
+      "sela": "/audio/vocab/11/sela.mp3",
+      "trote": "/audio/vocab/11/trote.mp3",
+      "galope": "/audio/vocab/11/galope.mp3",
+      "passo": "/audio/vocab/11/passo.mp3",
+      "distância segura": "/audio/vocab/11/distancia-segura.mp3",
+      "instrutor": "/audio/vocab/11/instrutor.mp3",
+      "trilha equestre": "/audio/vocab/11/trilha-equestre.mp3",
+      "paisagem": "/audio/vocab/11/paisagem.mp3"
+    },
+    "12": {
+      "aluguel": "/audio/vocab/12/aluguel.mp3",
+      "equipamento": "/audio/vocab/12/equipamento.mp3",
+      "botas": "/audio/vocab/12/botas.mp3",
+      "prancha": "/audio/vocab/12/prancha.mp3",
+      "capacete": "/audio/vocab/12/capacete.mp3",
+      "depósito": "/audio/vocab/12/deposito.mp3",
+      "recibo": "/audio/vocab/12/recibo.mp3",
+      "tamanho": "/audio/vocab/12/tamanho.mp3",
+      "devolução": "/audio/vocab/12/devolucao.mp3",
+      "dano": "/audio/vocab/12/dano.mp3",
+      "óculos de proteção": "/audio/vocab/12/oculos-de-protecao.mp3",
+      "neve": "/audio/vocab/12/neve.mp3"
+    },
+    "13": {
+      "cardápio": "/audio/vocab/13/cardapio.mp3",
+      "prato do dia": "/audio/vocab/13/prato-do-dia.mp3",
+      "degustação": "/audio/vocab/13/degustacao.mp3",
+      "vinho": "/audio/vocab/13/vinho.mp3",
+      "azeite de oliva": "/audio/vocab/13/azeite-de-oliva.mp3",
+      "alergia alimentar": "/audio/vocab/13/alergia-alimentar.mp3",
+      "restrição alimentar": "/audio/vocab/13/restricao-alimentar.mp3",
+      "espresso": "/audio/vocab/13/espresso.mp3",
+      "taxa de serviço": "/audio/vocab/13/taxa-de-servico.mp3",
+      "sobremesa": "/audio/vocab/13/sobremesa.mp3",
+      "cortesia da casa": "/audio/vocab/13/cortesia-da-casa.mp3",
+      "pão de boas-vindas": "/audio/vocab/13/pao-de-boas-vindas.mp3"
     },
     "m14": {
       "emergência": "/audio/vocab/m14/emergencia.mp3",
