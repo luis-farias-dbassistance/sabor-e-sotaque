@@ -47,7 +47,7 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
     const loadAudio = async () => {
       try {
         // Try to fetch the audio manifest to find the right hash
-        const manifestRes = await fetch('/audio/manifest.json', { cache: 'no-store' });
+        const manifestRes = await fetch('/audio/manifest.json?v=' + Date.now());
         if (manifestRes.ok) {
           const manifestRaw = await manifestRes.json();
           // Support both legacy flat format and new {phrases, vocabulary} format

@@ -53,7 +53,7 @@ export default function VocabClient({ moduleId }: Props) {
     if (!currentWord || isPlaying) return;
     setIsPlaying(true);
     try {
-      const manifestRes = await fetch('/audio/manifest.json', { cache: 'no-store' });
+      const manifestRes = await fetch('/audio/manifest.json?v=' + Date.now());
       if (manifestRes.ok) {
         const manifestRaw = await manifestRes.json();
         const vocabManifest = manifestRaw.vocabulary;
