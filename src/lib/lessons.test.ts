@@ -63,10 +63,10 @@ describe('Lesson Data Integrity', () => {
     expect(hasPortugueseChars).toBe(true);
   });
 
-  test('every imageUrl should reference a valid image file in /images/', () => {
+  test('every imageUrl should reference a valid image file or unsplash URL', () => {
     for (const mod of Object.values(INITIAL_DATA)) {
       for (const lesson of mod.lessons) {
-        expect(lesson.imageUrl).toMatch(/^\/images\/\w+\.(avif|png|jpg)$/);
+        expect(lesson.imageUrl).toMatch(/^(\/images\/\w+\.(avif|png|jpg)|https:\/\/images\.unsplash\.com\/photo-\w+.+)$/);
       }
     }
   });

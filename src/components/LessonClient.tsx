@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft, Info, Trophy, Settings, Menu } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Trophy, Settings, Menu } from 'lucide-react';
 import { VoiceAssessor } from '@/components/VoiceAssessor';
 import { LessonSidebar } from '@/components/LessonSidebar';
 import { INITIAL_DATA } from '@/lib/lessons';
+import { saveProgress, getUser } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LessonClient() {
@@ -27,7 +28,7 @@ export default function LessonClient() {
     }
   }, [id]);
 
-  const handleSuccess = (score: number) => {
+  const handleSuccess = async (score: number) => {
     setIsSuccess(true);
     const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
     audio.play();
@@ -36,12 +37,32 @@ export default function LessonClient() {
       const newCompleted = [...completedLessonIds, currentLessonId];
       setCompletedLessonIds(newCompleted);
       localStorage.setItem(`module_${id}_progress`, JSON.stringify(newCompleted));
+      
+      const user = getUser();
+      if (user && user.userId) {
+        await saveProgress(user.userId, currentLessonId, id as string, Math.round(score * 100));
+      }
+    }
+  };
+
+  const currentIndex = moduleData.lessons.findIndex(l => l.id === currentLessonId);
+
+  const handlePrevLesson = () => {
+    if (currentIndex > 0) {
+      setIsSuccess(false);
+      setCurrentLessonId(moduleData.lessons[currentIndex - 1].id);
+    }
+  };
+
+  const handleNextLesson = () => {
+    if (currentIndex < moduleData.lessons.length - 1) {
+      setIsSuccess(false);
+      setCurrentLessonId(moduleData.lessons[currentIndex + 1].id);
     }
   };
 
   const handleContinue = () => {
     setIsSuccess(false);
-    const currentIndex = moduleData.lessons.findIndex(l => l.id === currentLessonId);
     if (currentIndex < moduleData.lessons.length - 1) {
       setCurrentLessonId(moduleData.lessons[currentIndex + 1].id);
     } else {
@@ -93,52 +114,103 @@ export default function LessonClient() {
           </div>
         </div>
 
-        <div className="max-w-3xl mx-auto w-full px-6 py-8">
-          <div className="relative aspect-video rounded-[2.5rem] overflow-hidden mb-10 shadow-2xl border border-zinc-800">
-            <img 
-              src={lesson.imageUrl} 
-              alt={moduleData.title} 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-            
-            <div className="absolute bottom-8 left-8 right-8">
-              <div className="flex items-start gap-3 text-zinc-300 bg-black/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/10 shadow-2xl">
-                <Info className="w-6 h-6 mt-1 shrink-0 text-amber-400" />
-                <div>
-                  <p className="text-xs text-zinc-500 uppercase tracking-widest font-black mb-1">Contexto de Uso</p>
-                  <p className="text-base italic leading-relaxed">{lesson.context}</p>
+        <div className="max-w-3xl mx-auto w-full px-6 py-8 relative min-h-[600px]">
+          {/* Desktop Navigation Arrows (Float on the sides of the main content) */}
+          {currentIndex > 0 && (
+            <button
+              onClick={handlePrevLesson}
+              className="absolute -left-14 xl:-left-24 lg:-left-20 top-1/3 -translate-y-1/2 p-4 bg-zinc-900/80 hover:bg-zinc-800 text-white rounded-full border border-zinc-800 hover:border-amber-500/50 hover:text-amber-500 transition-all duration-300 transform hover:scale-110 active:scale-95 z-20 shadow-2xl backdrop-blur-sm hidden md:flex items-center justify-center"
+              aria-label="Lección anterior"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          )}
+          
+          {currentIndex < moduleData.lessons.length - 1 && (
+            <button
+              onClick={handleNextLesson}
+              className="absolute -right-14 xl:-right-24 lg:-right-20 top-1/3 -translate-y-1/2 p-4 bg-zinc-900/80 hover:bg-zinc-800 text-white rounded-full border border-zinc-800 hover:border-amber-500/50 hover:text-amber-500 transition-all duration-300 transform hover:scale-110 active:scale-95 z-20 shadow-2xl backdrop-blur-sm hidden md:flex items-center justify-center"
+              aria-label="Siguiente lección"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          )}
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentLessonId}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <div className="relative aspect-video rounded-[2.5rem] overflow-hidden mb-10 shadow-2xl border border-zinc-800">
+                <img 
+                  src={lesson.imageUrl} 
+                  alt={moduleData.title} 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                
+                <div className="absolute bottom-8 left-8 right-8">
+                  <div className="flex items-start gap-3 text-zinc-300 bg-black/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/10 shadow-2xl">
+                    <Info className="w-6 h-6 mt-1 shrink-0 text-amber-400" />
+                    <div>
+                      <p className="text-xs text-zinc-500 uppercase tracking-widest font-black mb-1">Contexto de Uso</p>
+                      <p className="text-base italic leading-relaxed">{lesson.context}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile/Tablet navigation arrows (overlays on image sides) */}
+                {currentIndex > 0 && (
+                  <button
+                    onClick={handlePrevLesson}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-zinc-900/80 text-white rounded-full border border-zinc-850 hover:border-amber-500/50 hover:text-amber-500 transition-all duration-300 transform active:scale-95 z-20 shadow-lg backdrop-blur-sm md:hidden flex items-center justify-center"
+                    aria-label="Lección anterior"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                )}
+                {currentIndex < moduleData.lessons.length - 1 && (
+                  <button
+                    onClick={handleNextLesson}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-zinc-900/80 text-white rounded-full border border-zinc-850 hover:border-amber-500/50 hover:text-amber-500 transition-all duration-300 transform active:scale-95 z-20 shadow-lg backdrop-blur-sm md:hidden flex items-center justify-center"
+                    aria-label="Siguiente lección"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-12 mb-16">
+                <div className="text-center space-y-4">
+                  <div className="inline-block px-4 py-1 bg-zinc-900 rounded-full border border-zinc-800">
+                    <p className="text-zinc-500 text-[10px] uppercase tracking-[0.2em] font-black">Traducción al Español</p>
+                  </div>
+                  <p className="text-2xl text-zinc-300 font-medium tracking-tight">"{lesson.phrase_es}"</p>
+                </div>
+                
+                <div className="text-center space-y-6">
+                  <div className="inline-block px-4 py-1 bg-amber-500/10 rounded-full border border-amber-500/20">
+                    <p className="text-amber-500 text-[10px] uppercase tracking-[0.2em] font-black">Pronunciación en Portugués</p>
+                  </div>
+                  <h3 className="text-5xl font-black tracking-tighter leading-tight text-white px-4">
+                    "{lesson.phrase_pt}"
+                  </h3>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 gap-12 mb-16">
-            <div className="text-center space-y-4">
-              <div className="inline-block px-4 py-1 bg-zinc-900 rounded-full border border-zinc-800">
-                <p className="text-zinc-500 text-[10px] uppercase tracking-[0.2em] font-black">Traducción al Español</p>
+              <div className="max-w-md mx-auto">
+                <VoiceAssessor 
+                  key={lesson.id}
+                  targetPhrase={lesson.phrase_pt}
+                  onSuccess={handleSuccess}
+                  onFailure={() => {}}
+                />
               </div>
-              <p className="text-2xl text-zinc-300 font-medium tracking-tight">"{lesson.phrase_es}"</p>
-            </div>
-            
-            <div className="text-center space-y-6">
-              <div className="inline-block px-4 py-1 bg-amber-500/10 rounded-full border border-amber-500/20">
-                <p className="text-amber-500 text-[10px] uppercase tracking-[0.2em] font-black">Pronunciación en Portugués</p>
-              </div>
-              <h3 className="text-5xl font-black tracking-tighter leading-tight text-white px-4">
-                "{lesson.phrase_pt}"
-              </h3>
-            </div>
-          </div>
-
-          <div className="max-w-md mx-auto">
-            <VoiceAssessor 
-              key={lesson.id}
-              targetPhrase={lesson.phrase_pt}
-              onSuccess={handleSuccess}
-              onFailure={() => {}}
-            />
-          </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 

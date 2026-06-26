@@ -3,37 +3,7 @@
  * Critical for pronunciation assessment accuracy
  */
 
-// Extract the algorithm from VoiceAssessor for testing
-const calculateSimilarity = (s1: string, s2: string): number => {
-  const longer = s1.length > s2.length ? s1 : s2;
-  const shorter = s1.length > s2.length ? s2 : s1;
-  
-  if (longer.length === 0) return 1.0;
-  
-  const editDistance = (s1: string, s2: string): number => {
-    const costs: number[] = [];
-    for (let i = 0; i <= s1.length; i++) {
-      let lastValue = i;
-      for (let j = 0; j <= s2.length; j++) {
-        if (i === 0) costs[j] = j;
-        else {
-          if (j > 0) {
-            let newValue = costs[j - 1];
-            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
-              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-            costs[j - 1] = lastValue;
-            lastValue = newValue;
-          }
-        }
-      }
-      if (i > 0) costs[s2.length] = lastValue;
-    }
-    return costs[s2.length];
-  };
-
-  const distance = editDistance(longer.toLowerCase(), shorter.toLowerCase());
-  return (longer.length - distance) / longer.length;
-};
+import { calculateSimilarity } from './similarity';
 
 describe('Pronunciation Similarity Algorithm', () => {
   // === Exact Matches ===
@@ -54,14 +24,25 @@ describe('Pronunciation Similarity Algorithm', () => {
     });
   });
 
-  // === Case Insensitivity ===
-  describe('case insensitivity', () => {
+  // === Case and Punctuation Insensitivity ===
+  describe('case and punctuation insensitivity', () => {
     test('should be case insensitive', () => {
       expect(calculateSimilarity('HELLO', 'hello')).toBe(1.0);
     });
 
     test('should handle mixed case Portuguese', () => {
       expect(calculateSimilarity('Sejam BEM-VINDOS', 'sejam bem-vindos')).toBe(1.0);
+    });
+
+    test('should ignore punctuation and special characters', () => {
+      expect(calculateSimilarity(
+        'Sejam bem-vindos! Fiquem à vontade.',
+        'sejam bem vindos fiquem à vontade'
+      )).toBe(1.0);
+    });
+
+    test('should ignore double spaces', () => {
+      expect(calculateSimilarity('hello  world', 'hello world')).toBe(1.0);
     });
   });
 
@@ -77,28 +58,28 @@ describe('Pronunciation Similarity Algorithm', () => {
 
     test('missing accent should reduce but not zero similarity', () => {
       const score = calculateSimilarity('à vontade', 'a vontade');
-      expect(score).toBeGreaterThan(0.8);
+      expect(score).toBeGreaterThan(0.85);
       expect(score).toBeLessThan(1.0);
     });
 
     test('ç vs c should have high similarity', () => {
       const score = calculateSimilarity('caroço', 'caroco');
-      expect(score).toBeGreaterThan(0.7);
+      expect(score).toBeGreaterThan(0.8);
     });
   });
 
   // === Threshold Testing ===
-  describe('success threshold (> 0.75)', () => {
-    test('close pronunciation should pass (> 0.75)', () => {
+  describe('success threshold (>= 0.85)', () => {
+    test('close pronunciation should pass (>= 0.85)', () => {
       // Simulating a user who says "Sejam bemvindos" instead of "Sejam bem-vindos"
       const score = calculateSimilarity('Sejam bemvindos', 'Sejam bem-vindos');
-      expect(score).toBeGreaterThan(0.75);
+      expect(score).toBeGreaterThanOrEqual(0.85);
     });
 
-    test('moderately wrong pronunciation should fail (< 0.75)', () => {
+    test('moderately wrong pronunciation should fail (< 0.85)', () => {
       // User says something very different
       const score = calculateSimilarity('Buenos días señor', 'Sejam bem-vindos');
-      expect(score).toBeLessThan(0.75);
+      expect(score).toBeLessThan(0.85);
     });
 
     test('completely wrong input should score very low', () => {

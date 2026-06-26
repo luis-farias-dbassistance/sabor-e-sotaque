@@ -3,66 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Square, CheckCircle, XCircle, Volume2, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import crypto from 'crypto';
+import { calculateSimilarity } from '@/lib/similarity';
 
 interface VoiceAssessorProps {
   targetPhrase: string;
   onSuccess: (score: number) => void;
   onFailure: (score: number) => void;
 }
-
-// Simple hash for phrase → filename mapping
-function hashPhrase(phrase: string): string {
-  // Use a simple hash that works in the browser
-  let hash = 0;
-  const str = phrase.toLowerCase().trim();
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  // Convert to hex and pad
-  return Math.abs(hash).toString(16).padStart(8, '0');
-}
-
-// MD5 hash matching the server-side script (simple browser-compatible version)
-function md5Hash(str: string): string {
-  // We'll use the same approach: try to fetch by the server-generated MD5 hash
-  // Since we can't do MD5 in browser easily without a lib, we use a lookup approach
-  return str.toLowerCase().trim();
-}
-
-// Levenshtein distance for pronunciation comparison
-const calculateSimilarity = (s1: string, s2: string): number => {
-  const longer = s1.length > s2.length ? s1 : s2;
-  const shorter = s1.length > s2.length ? s2 : s1;
-  
-  if (longer.length === 0) return 1.0;
-  
-  const editDistance = (s1: string, s2: string): number => {
-    const costs: number[] = [];
-    for (let i = 0; i <= s1.length; i++) {
-      let lastValue = i;
-      for (let j = 0; j <= s2.length; j++) {
-        if (i === 0) costs[j] = j;
-        else {
-          if (j > 0) {
-            let newValue = costs[j - 1];
-            if (s1.charAt(i - 1) !== s2.charAt(j - 1))
-              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-            costs[j - 1] = lastValue;
-            lastValue = newValue;
-          }
-        }
-      }
-      if (i > 0) costs[s2.length] = lastValue;
-    }
-    return costs[s2.length];
-  };
-
-  const distance = editDistance(longer.toLowerCase(), shorter.toLowerCase());
-  return (longer.length - distance) / longer.length;
-};
 
 export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSuccess, onFailure }) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -75,6 +22,22 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  // Load and listen to speech synthesis voices
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+      return () => {
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
+  }, []);
+
 
   // Pre-load audio from CDN (Polly-generated) on mount
   useEffect(() => {
@@ -129,13 +92,14 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
         const similarity = calculateSimilarity(result, targetPhrase);
         setScore(similarity);
         
-        if (similarity > 0.75) {
+        if (similarity >= 0.85) {
           onSuccess(similarity);
         } else {
           onFailure(similarity);
         }
         setIsRecording(false);
       };
+
 
       recognitionRef.current.onerror = (event: any) => {
         setError(event.error);
@@ -168,14 +132,32 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
     const utterance = new SpeechSynthesisUtterance(targetPhrase);
     utterance.lang = 'pt-BR';
     
-    // Try to pick the best available pt-BR voice
-    const voices = window.speechSynthesis.getVoices();
-    const ptBrVoice = voices.find(v => v.lang === 'pt-BR' && v.name.includes('Google')) 
-      || voices.find(v => v.lang === 'pt-BR')
-      || voices.find(v => v.lang.startsWith('pt'));
-    if (ptBrVoice) utterance.voice = ptBrVoice;
+    // Sort and find the best available pt-BR voice
+    const activeVoices = voices.length > 0 ? voices : (typeof window !== 'undefined' ? window.speechSynthesis.getVoices() : []);
+    const ptVoices = activeVoices.filter(v => v.lang.toLowerCase().replace('_', '-') === 'pt-br' || v.lang.toLowerCase().startsWith('pt'));
+    const bestVoice = ptVoices.sort((a, b) => {
+      const aLang = a.lang.toLowerCase().replace('_', '-');
+      const bLang = b.lang.toLowerCase().replace('_', '-');
+      const aIsPtBr = aLang === 'pt-br';
+      const bIsPtBr = bLang === 'pt-br';
+      
+      if (aIsPtBr && !bIsPtBr) return -1;
+      if (!aIsPtBr && bIsPtBr) return 1;
+      
+      const aIsPremium = a.name.includes('Siri') || a.name.includes('Google') || a.name.includes('Natural') || a.name.includes('Premium');
+      const bIsPremium = b.name.includes('Siri') || b.name.includes('Google') || b.name.includes('Natural') || b.name.includes('Premium');
+      
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+      
+      return 0;
+    })[0];
     
-    utterance.rate = 0.9; // Slightly slower for learning
+    if (bestVoice) {
+      utterance.voice = bestVoice;
+    }
+    
+    utterance.rate = 0.95; // Slightly slower but not too slow (0.95 is more natural)
     utterance.pitch = 1.0;
     utterance.onend = () => setIsPlaying(false);
     window.speechSynthesis.speak(utterance);
@@ -261,10 +243,10 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           className={`flex items-center gap-3 px-6 py-3 rounded-full ${
-            score > 0.75 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
+            score >= 0.85 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
           }`}
         >
-          {score > 0.75 ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+          {score >= 0.85 ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
           <span className="font-bold">{Math.round(score * 100)}% de precisión</span>
         </motion.div>
       )}

@@ -19,11 +19,16 @@ const s3 = new S3Client({ region: REGION });
 
 // Get bucket name from CloudFormation stack
 async function getBucketName() {
-  const { CloudFormationClient, DescribeStacksCommand } = require('@aws-sdk/client-cloudformation');
-  const cf = new CloudFormationClient({ region: REGION });
-  const result = await cf.send(new DescribeStacksCommand({ StackName: 'sabor-sotaque-frontend' }));
-  const output = result.Stacks[0].Outputs.find(o => o.OutputKey === 'BucketName');
-  return output.OutputValue;
+  try {
+    const { CloudFormationClient, DescribeStacksCommand } = require('@aws-sdk/client-cloudformation');
+    const cf = new CloudFormationClient({ region: REGION });
+    const result = await cf.send(new DescribeStacksCommand({ StackName: 'sabor-sotaque-frontend' }));
+    const output = result.Stacks[0].Outputs.find(o => o.OutputKey === 'BucketName');
+    return output.OutputValue;
+  } catch (err) {
+    console.warn(`  ⚠️  No se pudo obtener el bucket S3 (¿sesión expirada o sin desplegar?): ${err.message}`);
+    return null;
+  }
 }
 
 const fs = require('fs');
@@ -36,28 +41,61 @@ function hashPhrase(phrase) {
 function getPhrasesFromLessons() {
   const filePath = path.join(__dirname, '../src/lib/lessons.ts');
   const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
   const phrases = [];
-  const regex = /phrase_pt:\s*["']([^"']+)["']/g;
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-    // Replace escape sequences if any
-    phrases.push(match[1].replace(/\\"/g, '"').replace(/\\'/g, "'"));
+  
+  for (const line of lines) {
+    const match = line.match(/phrase_pt:\s*(["'])/);
+    if (match) {
+      const quoteChar = match[1];
+      const startIndex = line.indexOf('phrase_pt:') + 'phrase_pt:'.length;
+      const contentStart = line.indexOf(quoteChar, startIndex) + 1;
+      
+      let contentEnd = -1;
+      for (let i = contentStart; i < line.length; i++) {
+        if (line[i] === quoteChar && line[i - 1] !== '\\') {
+          contentEnd = i;
+          break;
+        }
+      }
+      
+      if (contentEnd !== -1) {
+        const phrase = line.substring(contentStart, contentEnd);
+        const unescaped = phrase
+          .replace(new RegExp('\\\\' + quoteChar, 'g'), quoteChar)
+          .replace(/\\"/g, '"')
+          .replace(/\\'/g, "'");
+        phrases.push(unescaped);
+      }
+    }
   }
   return [...new Set(phrases)]; // deduplicate
 }
 
 const PHRASES = getPhrasesFromLessons();
 
-
 async function synthesize(phrase) {
-  const result = await polly.send(new SynthesizeSpeechCommand({
-    Engine: 'neural',
-    LanguageCode: 'pt-BR',
-    OutputFormat: 'mp3',
-    Text: phrase,
-    VoiceId: 'Camila', // Best female pt-BR neural voice
-    TextType: 'text',
-  }));
+  let result;
+  try {
+    result = await polly.send(new SynthesizeSpeechCommand({
+      Engine: 'generative',
+      LanguageCode: 'pt-BR',
+      OutputFormat: 'mp3',
+      Text: phrase,
+      VoiceId: 'Camila', // Best pt-BR voice supporting generative engine
+      TextType: 'text',
+    }));
+  } catch (generativeErr) {
+    console.warn(`  ⚠️  Generative engine failed, falling back to neural: ${generativeErr.message}`);
+    result = await polly.send(new SynthesizeSpeechCommand({
+      Engine: 'neural',
+      LanguageCode: 'pt-BR',
+      OutputFormat: 'mp3',
+      Text: phrase,
+      VoiceId: 'Camila',
+      TextType: 'text',
+    }));
+  }
 
   // Convert stream to buffer
   const chunks = [];
@@ -67,7 +105,8 @@ async function synthesize(phrase) {
   return Buffer.concat(chunks);
 }
 
-async function audioExists(bucket, key) {
+async function audioExistsInS3(bucket, key) {
+  if (!bucket) return false;
   try {
     await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
     return true;
@@ -78,9 +117,17 @@ async function audioExists(bucket, key) {
 
 async function main() {
   const bucket = await getBucketName();
+  const audioDir = path.join(__dirname, '../public/audio');
+  
+  // Ensure local output directory exists
+  if (!fs.existsSync(audioDir)) {
+    fs.mkdirSync(audioDir, { recursive: true });
+  }
+
   console.log(`\n🎙️  Amazon Polly — Pre-generación de Audio`);
-  console.log(`📦 Bucket: ${bucket}`);
-  console.log(`🗣️  Voz: Camila (Neural pt-BR)`);
+  console.log(`📂 Directorio Local: public/audio`);
+  console.log(`📦 Bucket S3: ${bucket || 'No disponible'}`);
+  console.log(`🗣️  Voz: Camila (Generative pt-BR)`);
   console.log(`📝 Frases: ${PHRASES.length}\n`);
 
   let generated = 0;
@@ -88,12 +135,14 @@ async function main() {
 
   for (const phrase of PHRASES) {
     const hash = hashPhrase(phrase);
-    const key = `audio/${hash}.mp3`;
+    const filename = `${hash}.mp3`;
+    const localPath = path.join(audioDir, filename);
+    const key = `audio/${filename}`;
     const shortPhrase = phrase.substring(0, 50) + (phrase.length > 50 ? '...' : '');
 
-    // Skip if already exists
-    if (await audioExists(bucket, key)) {
-      console.log(`  ⏭️  [existe] ${shortPhrase}`);
+    // Skip if already exists locally
+    if (fs.existsSync(localPath)) {
+      console.log(`  ⏭️  [existe local] ${shortPhrase}`);
       skipped++;
       continue;
     }
@@ -101,18 +150,29 @@ async function main() {
     try {
       const audioBuffer = await synthesize(phrase);
       
-      await s3.send(new PutObjectCommand({
-        Bucket: bucket,
-        Key: key,
-        Body: audioBuffer,
-        ContentType: 'audio/mpeg',
-        CacheControl: 'max-age=31536000', // 1 year cache
-      }));
-
-      console.log(`  ✅ [${(audioBuffer.length / 1024).toFixed(1)}KB] ${shortPhrase}`);
+      // Save locally
+      fs.writeFileSync(localPath, audioBuffer);
+      console.log(`  ✅ [Guardado Local - ${(audioBuffer.length / 1024).toFixed(1)}KB] ${shortPhrase}`);
+      
+      // Upload to S3 if bucket is available
+      if (bucket) {
+        try {
+          await s3.send(new PutObjectCommand({
+            Bucket: bucket,
+            Key: key,
+            Body: audioBuffer,
+            ContentType: 'audio/mpeg',
+            CacheControl: 'max-age=31536000', // 1 year cache
+          }));
+          console.log(`     📤 Subido a S3: ${key}`);
+        } catch (s3Err) {
+          console.error(`     ⚠️  Error subiendo a S3: ${s3Err.message}`);
+        }
+      }
+      
       generated++;
     } catch (err) {
-      console.error(`  ❌ Error: ${shortPhrase} — ${err.message}`);
+      console.error(`  ❌ Error sintetizando: ${shortPhrase} — ${err.message}`);
     }
   }
 
@@ -122,17 +182,28 @@ async function main() {
     manifest[hashPhrase(phrase)] = phrase;
   }
   
-  await s3.send(new PutObjectCommand({
-    Bucket: bucket,
-    Key: 'audio/manifest.json',
-    Body: JSON.stringify(manifest, null, 2),
-    ContentType: 'application/json',
-  }));
+  const manifestPath = path.join(audioDir, 'manifest.json');
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  console.log(`  ✅ Manifiesto guardado en local: public/audio/manifest.json`);
+
+  if (bucket) {
+    try {
+      await s3.send(new PutObjectCommand({
+        Bucket: bucket,
+        Key: 'audio/manifest.json',
+        Body: JSON.stringify(manifest, null, 2),
+        ContentType: 'application/json',
+      }));
+      console.log(`  📤 Manifiesto subido a S3`);
+    } catch (s3Err) {
+      console.error(`  ⚠️  Error subiendo manifiesto a S3: ${s3Err.message}`);
+    }
+  }
 
   console.log(`\n================================================`);
   console.log(`  ✅ Generados: ${generated}`);
   console.log(`  ⏭️  Ya existían: ${skipped}`);
-  console.log(`  💰 Costo estimado: ~$${(generated * 0.004).toFixed(2)}`);
+  console.log(`  💰 Costo estimado Polly: ~$${(generated * 0.004).toFixed(2)}`);
   console.log(`================================================\n`);
 }
 

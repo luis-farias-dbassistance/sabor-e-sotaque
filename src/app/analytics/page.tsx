@@ -1,27 +1,39 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, BarChart3, Users, Award, TrendingUp, Search } from 'lucide-react';
+import { ChevronLeft, BarChart3, Users, Award, TrendingUp, Search, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-
-const TEAM_STATS = [
-  { id: 1, name: "Cristian Morales", rank: "Maître Bilingüe", completion: 95, accuracy: 88, streak: 12, avatar: "CM" },
-  { id: 2, name: "Valentina Soto", rank: "Garçom Pro", completion: 72, accuracy: 82, streak: 5, avatar: "VS" },
-  { id: 3, name: "Andrés Silva", rank: "Garçom Pro", completion: 68, accuracy: 79, streak: 8, avatar: "AS" },
-  { id: 4, name: "Javiera Paz", rank: "Ayudante", completion: 34, accuracy: 75, streak: 2, avatar: "JP" },
-  { id: 5, name: "Roberto Díaz", rank: "Ayudante", completion: 21, accuracy: 70, streak: 1, avatar: "RD" },
-];
-
-const MODULE_PERFORMANCE = [
-  { name: "Hospitalidad", progress: 85 },
-  { name: "Maestría Parrillera", progress: 64 },
-  { name: "Clásicos del Campo", progress: 42 },
-  { name: "Sandwichería", progress: 28 },
-];
+import { getAnalytics } from '@/lib/api';
 
 export default function AnalyticsPage() {
   const router = useRouter();
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAnalytics().then(res => {
+      setData(res);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white p-8 flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin w-12 h-12 text-amber-500 mb-4" />
+        <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">Cargando Analytics...</p>
+      </div>
+    );
+  }
+
+  const TEAM_STATS = data?.teamStats || [];
+  
+  // Format module progress based on backend structure
+  const MODULE_PERFORMANCE = Object.entries(data?.moduleProgress || {}).map(([id, info]: any) => ({
+    name: `Módulo ${id}`,
+    progress: info.total > 0 ? Math.round((info.completed / info.total) * 100) : 0,
+  }));
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
@@ -40,10 +52,10 @@ export default function AnalyticsPage() {
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           {[
-            { label: "Usuarios Activos", value: "24", icon: Users, color: "text-amber-500" },
-            { label: "Precisión Media", value: "81%", icon: Award, color: "text-emerald-500" },
-            { label: "Lecciones Hoy", value: "142", icon: BarChart3, color: "text-blue-500" },
-            { label: "Tasa de Retención", value: "92%", icon: TrendingUp, color: "text-purple-500" },
+            { label: "Usuarios Activos", value: data?.totalUsers?.toString() || "0", icon: Users, color: "text-amber-500" },
+            { label: "Precisión Media", value: `${data?.avgAccuracy || 0}%`, icon: Award, color: "text-emerald-500" },
+            { label: "Lecciones Hoy", value: data?.completedToday?.toString() || "0", icon: BarChart3, color: "text-blue-500" },
+            { label: "Tasa de Retención", value: `${data?.retentionRate || 0}%`, icon: TrendingUp, color: "text-purple-500" },
           ].map((stat, i) => (
             <motion.div 
               key={i}
@@ -85,7 +97,7 @@ export default function AnalyticsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-900">
-                  {TEAM_STATS.map((member) => (
+                  {TEAM_STATS.map((member: any) => (
                     <tr key={member.id} className="hover:bg-white/5 transition-colors group">
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">

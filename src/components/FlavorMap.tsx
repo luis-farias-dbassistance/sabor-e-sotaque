@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Lock, Star, BarChart3, Settings, LogOut, DownloadCloud, Wifi, WifiOff } from 'lucide-react';
-import { getUser, logout } from '@/lib/api';
+import { getUser, logout, getProgress, saveProgress } from '@/lib/api';
 import { INITIAL_DATA } from '@/lib/lessons';
 
 export const FlavorMap = () => {
@@ -34,8 +34,46 @@ export const FlavorMap = () => {
       }
       
       calculateUserStats();
+      syncUserProgress();
     }
   }, [isSyncing]);
+
+  const syncUserProgress = async () => {
+    if (!user || !user.userId) return;
+    
+    try {
+      const { progress } = await getProgress(user.userId);
+      if (!progress) return;
+
+      const backendCompleted: Record<string, string[]> = {};
+      progress.forEach((p: any) => {
+        if (p.completed) {
+          if (!backendCompleted[p.moduleId]) backendCompleted[p.moduleId] = [];
+          backendCompleted[p.moduleId].push(p.lessonId);
+        }
+      });
+
+      for (const modId of Object.keys(INITIAL_DATA)) {
+        const localKey = `module_${modId}_progress`;
+        const localSaved = JSON.parse(localStorage.getItem(localKey) || '[]');
+        const backendSaved = backendCompleted[modId] || [];
+
+        const merged = Array.from(new Set([...localSaved, ...backendSaved]));
+        if (merged.length > localSaved.length) {
+          localStorage.setItem(localKey, JSON.stringify(merged));
+        }
+
+        const toUpload = localSaved.filter((id: string) => !backendSaved.includes(id));
+        for (const lessonId of toUpload) {
+          await saveProgress(user.userId, lessonId, modId, 100);
+        }
+      }
+      
+      calculateUserStats();
+    } catch (err) {
+      console.error('Failed to sync progress with DynamoDB', err);
+    }
+  };
 
   const calculateUserStats = () => {
     let completedCount = 0;

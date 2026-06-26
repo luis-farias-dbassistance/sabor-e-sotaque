@@ -85,7 +85,27 @@ exports.handler = async (event) => {
         ExpressionAttributeValues: { ':email': email },
       }));
       
-      const user = users.Items?.[0] || {};
+      let user = users.Items?.[0];
+
+      // Auto-create DynamoDB profile for existing Cognito users (e.g. created via CLI)
+      if (!user) {
+        const userId = `user_${Date.now()}`;
+        user = {
+          userId,
+          email,
+          name: email.split('@')[0],
+          points: 0,
+          rank: 'Ayudante',
+          streakDays: 0,
+          completedLessons: 0,
+          lastActivityAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+        };
+        await ddb.send(new PutCommand({
+          TableName: USERS_TABLE,
+          Item: user,
+        }));
+      }
 
       return response(200, {
         token: auth.AuthenticationResult.IdToken,

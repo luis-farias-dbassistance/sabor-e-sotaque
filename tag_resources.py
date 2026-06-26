@@ -7,6 +7,7 @@ from botocore.exceptions import ClientError
 # Definición de los tags a aplicar
 TAGS = {
     'System': 'sabor-e-sotaque',
+    'Application': 'sabor-e-sotaque',
     'Owner': 'luis farias',
     'Environment': 'test',
     'Project': 'portugues-para-turismo-cl'

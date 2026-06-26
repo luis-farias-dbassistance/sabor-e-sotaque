@@ -1,0 +1,144 @@
+// Reemplazos generados automáticamente
+// Copia y pega estas líneas en lessons.ts
+
+// 1-1: https://images.unsplash.com/photo-1552566626-52f8b828add9
+//       -> https://images.unsplash.com/photo-7dKfT_nzEtA?auto=format&fit=crop&w=800&q=80
+
+// 1-4: https://images.unsplash.com/photo-1552566626-52f8b828add9
+//       -> https://images.unsplash.com/photo-1Uj0HmqQFGk?auto=format&fit=crop&w=800&q=80
+
+// 2-1: https://images.unsplash.com/photo-1544025162-d76694265947
+//       -> https://images.unsplash.com/photo-sV8Cl0_3UcY?auto=format&fit=crop&w=800&q=80
+
+// 2-2: https://images.unsplash.com/photo-1546964124-0cce460f38ef
+//       -> https://images.unsplash.com/photo-U5lLwx17rWs?auto=format&fit=crop&w=800&q=80
+
+// 2-6: https://images.unsplash.com/photo-1551183053-bf91a1d81141
+//       -> https://images.unsplash.com/photo-cpkPJ-U9eUM?auto=format&fit=crop&w=800&q=80
+
+// 2-8: https://images.unsplash.com/photo-1606787366850-de6330128bfc
+//       -> https://images.unsplash.com/photo-4_jhDO54BYg?auto=format&fit=crop&w=800&q=80
+
+// 2-9: https://images.unsplash.com/photo-1588166524941-3bf61a9c41db
+//       -> https://images.unsplash.com/photo-4nk4AxJZvFk?auto=format&fit=crop&w=800&q=80
+
+// 3-2: https://images.unsplash.com/photo-1587314168485-3236d6710814
+//       -> https://images.unsplash.com/photo-hAUyjrUb-s8?auto=format&fit=crop&w=800&q=80
+
+// 4-3: https://images.unsplash.com/photo-1534422298391-e4f8c172dddb
+//       -> https://images.unsplash.com/photo-ksTaKJVJpEo?auto=format&fit=crop&w=800&q=80
+
+// 4-4: https://images.unsplash.com/photo-1615485290382-441e4d049cb5
+//       -> https://images.unsplash.com/photo-qvIrI4ueqzY?auto=format&fit=crop&w=800&q=80
+
+// 4-7: https://images.unsplash.com/photo-1547592180-85f173990554
+//       -> https://images.unsplash.com/photo-P8MXephSELc?auto=format&fit=crop&w=800&q=80
+
+// 5-2: https://images.unsplash.com/photo-1543269865-cbf427effbad
+//       -> https://images.unsplash.com/photo-XgLGXGIg8bU?auto=format&fit=crop&w=800&q=80
+
+// 5-5: https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af
+//       -> https://images.unsplash.com/photo-Zlm38pirg54?auto=format&fit=crop&w=800&q=80
+
+// 5-6: https://images.unsplash.com/photo-1584132967334-10e028bd69f7
+//       -> https://images.unsplash.com/photo-QpjyqYy5R-U?auto=format&fit=crop&w=800&q=80
+
+// 5-8: https://images.unsplash.com/photo-1556740738-b6a63e27c4df
+//       -> https://images.unsplash.com/photo-HNPrWOH2Z8U?auto=format&fit=crop&w=800&q=80
+
+// 5-9: https://images.unsplash.com/photo-1540518614846-7eded433c457
+//       -> https://images.unsplash.com/photo-6MYm-cUJRB0?auto=format&fit=crop&w=800&q=80
+
+// 5-10: https://images.unsplash.com/photo-1584622650111-993a426fbf0a
+//       -> https://images.unsplash.com/photo-VCUbsNJdZpQ?auto=format&fit=crop&w=800&q=80
+
+// 6-3: https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98
+//       -> https://images.unsplash.com/photo-2GqwfocQI6Q?auto=format&fit=crop&w=800&q=80
+
+// 6-5: https://images.unsplash.com/photo-1527018601619-a508a2be00cd
+//       -> https://images.unsplash.com/photo-ljU7DhGiF10?auto=format&fit=crop&w=800&q=80
+
+// 6-9: https://images.unsplash.com/photo-1449965408869-eaa3f722e40d
+//       -> https://images.unsplash.com/photo-VRMzxRnzpfw?auto=format&fit=crop&w=800&q=80
+
+// 7-1: https://images.unsplash.com/photo-1506784983877-45594efa4cbe
+//       -> https://images.unsplash.com/photo-addEU6TScGI?auto=format&fit=crop&w=800&q=80
+
+// 7-4: https://images.unsplash.com/photo-1508962914676-134849a727f0
+//       -> https://images.unsplash.com/photo-rFKBUwLg_WQ?auto=format&fit=crop&w=800&q=80
+
+// 7-5: https://images.unsplash.com/photo-1559526324-4b87b5e36e44
+//       -> https://images.unsplash.com/photo-Q59HmzK38eQ?auto=format&fit=crop&w=800&q=80
+
+// 7-6: https://images.unsplash.com/photo-1555421689-491a97ff2040
+//       -> https://images.unsplash.com/photo-G771MJLxPaw?auto=format&fit=crop&w=800&q=80
+
+// 7-8: https://images.unsplash.com/photo-1450133064473-71024230f91b
+//       -> https://images.unsplash.com/photo-htQznS-Rx7w?auto=format&fit=crop&w=800&q=80
+
+// 7-10: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c
+//       -> https://images.unsplash.com/photo-pf66ltW0zIU?auto=format&fit=crop&w=800&q=80
+
+// 8-3: https://images.unsplash.com/photo-1539635278303-d4002c07eae3
+//       -> https://images.unsplash.com/photo-CUzEBQz4ThE?auto=format&fit=crop&w=800&q=80
+
+// 8-6: https://images.unsplash.com/photo-1465101162946-4377e57745c3
+//       -> https://images.unsplash.com/photo-XRW0ryFeizI?auto=format&fit=crop&w=800&q=80
+
+// 9-2: https://images.unsplash.com/photo-1528605248644-14dd04022da1
+//       -> https://images.unsplash.com/photo-6mcVaoGNz1w?auto=format&fit=crop&w=800&q=80
+
+// 10-3: https://images.unsplash.com/photo-1510563800743-aed236490d08
+//       -> https://images.unsplash.com/photo-toRgWaZMqUQ?auto=format&fit=crop&w=800&q=80
+
+// 10-5: https://images.unsplash.com/photo-1611284446314-60a58ac0deb9
+//       -> https://images.unsplash.com/photo-TuT_ttpdEIM?auto=format&fit=crop&w=800&q=80
+
+// 10-8: https://images.unsplash.com/photo-1504470695779-75300268aa0e
+//       -> https://images.unsplash.com/photo-77XP0-vzu2E?auto=format&fit=crop&w=800&q=80
+
+// 11-1: https://images.unsplash.com/photo-1551882547-ff40c63fe5fa
+//       -> https://images.unsplash.com/photo-qd0ahRcogyE?auto=format&fit=crop&w=800&q=80
+
+// 11-3: https://images.unsplash.com/photo-1551882547-ff40c63fe5fa
+//       -> https://images.unsplash.com/photo-9ABBDJRVQ80?auto=format&fit=crop&w=800&q=80
+
+// 11-4: https://images.unsplash.com/photo-1598974357801-cbca100e65d3
+//       -> https://images.unsplash.com/photo-gGG7NHbzeGg?auto=format&fit=crop&w=800&q=80
+
+// 11-7: https://images.unsplash.com/photo-1601758228041-f3b2795255f1
+//       -> https://images.unsplash.com/photo-9h_bJdGqzCk?auto=format&fit=crop&w=800&q=80
+
+// 11-9: https://images.unsplash.com/photo-1534447677768-be436bb09401
+//       -> https://images.unsplash.com/photo-dXFmcWmz2v0?auto=format&fit=crop&w=800&q=80
+
+// 11-10: https://images.unsplash.com/photo-1598974357801-cbca100e65d3
+//       -> https://images.unsplash.com/photo-CLXPSjtBVp8?auto=format&fit=crop&w=800&q=80
+
+// 12-2: https://images.unsplash.com/photo-1556740758-90de374c12ad
+//       -> https://images.unsplash.com/photo-RJQE64NmC_o?auto=format&fit=crop&w=800&q=80
+
+// 12-3: https://images.unsplash.com/photo-1556742111-a301076d9d18
+//       -> https://images.unsplash.com/photo-cIOwoljvd_Q?auto=format&fit=crop&w=800&q=80
+
+// 12-6: https://images.unsplash.com/photo-1508962914676-134849a727f0
+//       -> https://images.unsplash.com/photo-LoelYE8uw7I?auto=format&fit=crop&w=800&q=80
+
+// 12-7: https://images.unsplash.com/photo-1589829545856-d10d557cf95f
+//       -> https://images.unsplash.com/photo-doplSDELX7E?auto=format&fit=crop&w=800&q=80
+
+// 12-8: https://images.unsplash.com/photo-1502602898657-3e91760cbb34
+//       -> https://images.unsplash.com/photo-pmfJcN7RGiw?auto=format&fit=crop&w=800&q=80
+
+// 12-10: https://images.unsplash.com/photo-1554415707-6e8cfc93fe23
+//       -> https://images.unsplash.com/photo-fK3R3T5KmIs?auto=format&fit=crop&w=800&q=80
+
+// 13-2: https://images.unsplash.com/photo-1577106263724-2c8e03bfe9cf
+//       -> https://images.unsplash.com/photo-_zULnQwb-1k?auto=format&fit=crop&w=800&q=80
+
+// 13-5: https://images.unsplash.com/photo-1580828343064-fde4fc206bc6
+//       -> https://images.unsplash.com/photo-NlcCPeKNmwg?auto=format&fit=crop&w=800&q=80
+
+// 13-7: https://images.unsplash.com/photo-1556740738-b6a63e27c4df
+//       -> https://images.unsplash.com/photo-XXCxLP65U-k?auto=format&fit=crop&w=800&q=80
+

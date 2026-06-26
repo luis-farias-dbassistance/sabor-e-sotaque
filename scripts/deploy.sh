@@ -25,7 +25,8 @@ aws cloudformation deploy \
   --stack-name $BACKEND_STACK \
   --capabilities CAPABILITY_NAMED_IAM \
   --region $REGION \
-  --no-fail-on-empty-changeset
+  --no-fail-on-empty-changeset \
+  --tags Project=portugues-para-turismo-cl App=sabor-e-sotaque Application=sabor-e-sotaque
 
 # Get outputs
 API_URL=$(aws cloudformation describe-stacks --stack-name $BACKEND_STACK --region $REGION --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' --output text)
@@ -60,7 +61,8 @@ aws cloudformation deploy \
   --template-file deploy/frontend-stack.yaml \
   --stack-name $FRONTEND_STACK \
   --region $REGION \
-  --no-fail-on-empty-changeset
+  --no-fail-on-empty-changeset \
+  --tags Project=portugues-para-turismo-cl App=sabor-e-sotaque Application=sabor-e-sotaque
 
 BUCKET=$(aws cloudformation describe-stacks --stack-name $FRONTEND_STACK --region $REGION --query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' --output text)
 DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name $FRONTEND_STACK --region $REGION --query 'Stacks[0].Outputs[?OutputKey==`DistributionId`].OutputValue' --output text)
