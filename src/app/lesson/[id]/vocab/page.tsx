@@ -7,6 +7,7 @@ export function generateStaticParams() {
     .map(m => ({ id: m.id }));
 }
 
-export default function VocabPage({ params }: { params: { id: string } }) {
-  return <VocabClient moduleId={params.id} />;
+export default async function VocabPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <VocabClient moduleId={id} />;
 }
