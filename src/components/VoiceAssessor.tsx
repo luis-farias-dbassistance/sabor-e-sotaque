@@ -22,21 +22,8 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
-  // Load and listen to speech synthesis voices
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      const loadVoices = () => {
-        setVoices(window.speechSynthesis.getVoices());
-      };
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-      return () => {
-        window.speechSynthesis.onvoiceschanged = null;
-      };
-    }
-  }, []);
+  // Load and listen to speech synthesis voices — removed, using Polly only
 
 
   // Pre-load audio from CDN (Polly-generated) on mount
@@ -110,60 +97,18 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
   }, [targetPhrase, onSuccess, onFailure]);
 
   const playReference = () => {
+    if (!audioReady || !audioRef.current) {
+      // Polly audio not ready yet — do nothing, button is disabled
+      return;
+    }
     setIsPlaying(true);
-
-    if (audioReady && audioRef.current) {
-      // Use pre-generated Polly audio (natural voice)
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(e => {
-        console.warn("Failed to play Polly audio, falling back to Web Speech:", e);
-        playWithWebSpeech();
-      });
-      audioRef.current.onended = () => setIsPlaying(false);
-      audioRef.current.onerror = (e) => {
-        console.warn("Polly audio playback error:", e);
-        playWithWebSpeech();
-      };
-    } else {
-      console.warn("Audio not ready or manifest missing, falling back to Web Speech.");
-      // Fallback: Web Speech API
-      playWithWebSpeech();
-    }
-  };
-
-  const playWithWebSpeech = () => {
-    const utterance = new SpeechSynthesisUtterance(targetPhrase);
-    utterance.lang = 'pt-BR';
-    
-    // Sort and find the best available pt-BR voice
-    const activeVoices = voices.length > 0 ? voices : (typeof window !== 'undefined' ? window.speechSynthesis.getVoices() : []);
-    const ptVoices = activeVoices.filter(v => v.lang.toLowerCase().replace('_', '-') === 'pt-br' || v.lang.toLowerCase().startsWith('pt'));
-    const bestVoice = ptVoices.sort((a, b) => {
-      const aLang = a.lang.toLowerCase().replace('_', '-');
-      const bLang = b.lang.toLowerCase().replace('_', '-');
-      const aIsPtBr = aLang === 'pt-br';
-      const bIsPtBr = bLang === 'pt-br';
-      
-      if (aIsPtBr && !bIsPtBr) return -1;
-      if (!aIsPtBr && bIsPtBr) return 1;
-      
-      const aIsPremium = a.name.includes('Siri') || a.name.includes('Google') || a.name.includes('Natural') || a.name.includes('Premium');
-      const bIsPremium = b.name.includes('Siri') || b.name.includes('Google') || b.name.includes('Natural') || b.name.includes('Premium');
-      
-      if (aIsPremium && !bIsPremium) return -1;
-      if (!aIsPremium && bIsPremium) return 1;
-      
-      return 0;
-    })[0];
-    
-    if (bestVoice) {
-      utterance.voice = bestVoice;
-    }
-    
-    utterance.rate = 0.95; // Slightly slower but not too slow (0.95 is more natural)
-    utterance.pitch = 1.0;
-    utterance.onend = () => setIsPlaying(false);
-    window.speechSynthesis.speak(utterance);
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(e => {
+      console.error("Error playing Polly audio:", e);
+      setIsPlaying(false);
+    });
+    audioRef.current.onended = () => setIsPlaying(false);
+    audioRef.current.onerror = () => setIsPlaying(false);
   };
 
   const startRecording = () => {
@@ -187,18 +132,22 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
     <div className="flex flex-col items-center gap-6 p-6 bg-zinc-900/50 rounded-3xl border border-zinc-800 backdrop-blur-xl">
       <div className="text-center">
         <p className="text-zinc-400 text-sm mb-2">
-          {audioReady ? '🎙️ Voz natural (Polly)' : '🔊 Voz del sistema'}
+          {audioReady ? '🎙️ Voz Polly (pt-BR)' : '⏳ Cargando audio...'}
         </p>
         <button 
           onClick={playReference}
-          disabled={isPlaying}
+          disabled={isPlaying || !audioReady}
           className={`p-4 rounded-full transition-all ${
-            isPlaying 
+            !audioReady
+              ? 'bg-zinc-800/50 opacity-50 cursor-wait'
+              : isPlaying 
               ? 'bg-amber-500/20 animate-pulse' 
               : 'bg-zinc-800 hover:bg-zinc-700'
           }`}
         >
-          {isPlaying ? (
+          {!audioReady ? (
+            <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+          ) : isPlaying ? (
             <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
           ) : (
             <Volume2 className="w-8 h-8 text-amber-400" />
