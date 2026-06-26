@@ -58,14 +58,11 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
           );
           if (entry) {
             const audioUrl = `/audio/${entry[0]}.mp3`;
-            const audioRes = await fetch(audioUrl, { method: 'HEAD' });
-            if (audioRes.ok) {
-              audioUrlRef.current = audioUrl;
-              audioRef.current = new Audio(audioUrl);
-              audioRef.current.preload = 'auto';
-              setAudioReady(true);
-              return;
-            }
+            audioUrlRef.current = audioUrl;
+            audioRef.current = new Audio(audioUrl);
+            audioRef.current.preload = 'auto';
+            setAudioReady(true);
+            return;
           }
         }
       } catch {
