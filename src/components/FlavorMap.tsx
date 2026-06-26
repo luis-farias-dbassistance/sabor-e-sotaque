@@ -115,8 +115,7 @@ export const FlavorMap = () => {
       setSyncStatus('Buscando lista de audios...');
       setSyncProgress(10);
       
-      // Get audio manifest
-      const manifestRes = await fetch('/audio/manifest.json');
+      const manifestRes = await fetch('/audio/manifest.json', { cache: 'no-store' });
       if (manifestRes.ok) {
         const manifestRaw = await manifestRes.json();
         // Support both legacy flat format and new {phrases, vocabulary} format

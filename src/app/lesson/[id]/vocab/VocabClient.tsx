@@ -53,7 +53,7 @@ export default function VocabClient({ moduleId }: Props) {
     if (!currentWord || isPlaying) return;
     setIsPlaying(true);
     try {
-      const manifestRes = await fetch('/audio/manifest.json');
+      const manifestRes = await fetch('/audio/manifest.json', { cache: 'no-store' });
       if (manifestRes.ok) {
         const manifestRaw = await manifestRes.json();
         const vocabManifest = manifestRaw.vocabulary;
@@ -61,8 +61,14 @@ export default function VocabClient({ moduleId }: Props) {
           const audioUrl = vocabManifest[moduleId][currentWord.word_pt];
           const audio = new Audio(audioUrl);
           audio.onended = () => setIsPlaying(false);
-          audio.onerror = () => playWithWebSpeech();
-          await audio.play();
+          audio.onerror = (e) => {
+            console.warn("Vocab Polly playback error:", e);
+            playWithWebSpeech();
+          };
+          await audio.play().catch(e => {
+            console.warn("Vocab Polly playback failed:", e);
+            playWithWebSpeech();
+          });
           return;
         }
       }

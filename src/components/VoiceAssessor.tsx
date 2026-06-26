@@ -47,7 +47,7 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
     const loadAudio = async () => {
       try {
         // Try to fetch the audio manifest to find the right hash
-        const manifestRes = await fetch('/audio/manifest.json');
+        const manifestRes = await fetch('/audio/manifest.json', { cache: 'no-store' });
         if (manifestRes.ok) {
           const manifestRaw = await manifestRes.json();
           // Support both legacy flat format and new {phrases, vocabulary} format
@@ -118,13 +118,17 @@ export const VoiceAssessor: React.FC<VoiceAssessorProps> = ({ targetPhrase, onSu
     if (audioReady && audioRef.current) {
       // Use pre-generated Polly audio (natural voice)
       audioRef.current.currentTime = 0;
-      audioRef.current.play();
+      audioRef.current.play().catch(e => {
+        console.warn("Failed to play Polly audio, falling back to Web Speech:", e);
+        playWithWebSpeech();
+      });
       audioRef.current.onended = () => setIsPlaying(false);
-      audioRef.current.onerror = () => {
-        // Fallback to Web Speech API
+      audioRef.current.onerror = (e) => {
+        console.warn("Polly audio playback error:", e);
         playWithWebSpeech();
       };
     } else {
+      console.warn("Audio not ready or manifest missing, falling back to Web Speech.");
       // Fallback: Web Speech API
       playWithWebSpeech();
     }
