@@ -14,7 +14,10 @@ export interface Lesson {
   dialogue_trigger_pt?: string;
   dialogue_trigger_es?: string;
   speaker_role?: 'guide' | 'tourist' | 'receptionist' | 'agent';
-  difficulty?: 'básico' | 'intermedio' | 'avanzado';\n  lesson_type?: \"lesson\" | \"expression\";\n}
+  difficulty?: 'básico' | 'intermedio' | 'avanzado';
+  moduleId?: string;
+  lesson_type?: "lesson" | "expression";
+}
 
 export interface Module {
   id: string;
