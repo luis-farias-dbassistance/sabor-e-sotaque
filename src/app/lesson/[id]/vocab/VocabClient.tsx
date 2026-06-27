@@ -36,18 +36,7 @@ export default function VocabClient({ moduleId }: Props) {
     }
   }, [currentIndex, vocabulary.length, moduleData?.id]);
 
-  const playWithWebSpeech = () => {
-    if (!currentWord) return;
-    const utterance = new SpeechSynthesisUtterance(currentWord.word_pt);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 0.9;
-    const voices = window.speechSynthesis.getVoices();
-    const ptVoice = voices.find(v => v.lang.toLowerCase().startsWith('pt'));
-    if (ptVoice) utterance.voice = ptVoice;
-    utterance.onend = () => setIsPlaying(false);
-    utterance.onerror = () => setIsPlaying(false);
-    window.speechSynthesis.speak(utterance);
-  };
+  // Web Speech API fallback removed as per project rules (Polly only)
 
   const playAudio = async () => {
     if (!currentWord || isPlaying) return;
@@ -62,18 +51,26 @@ export default function VocabClient({ moduleId }: Props) {
           const audio = new Audio(audioUrl);
           audio.onended = () => setIsPlaying(false);
           audio.onerror = (e) => {
-            console.warn("Vocab Polly playback error:", e);
-            playWithWebSpeech();
+            console.error("Vocab Polly playback error:", e);
+            setIsPlaying(false);
           };
           await audio.play().catch(e => {
-            console.warn("Vocab Polly playback failed:", e);
-            playWithWebSpeech();
+            console.error("Vocab Polly playback failed:", e);
+            setIsPlaying(false);
           });
           return;
+        } else {
+          console.error("Vocab audio not found in manifest for word:", currentWord.word_pt);
+          setIsPlaying(false);
         }
+      } else {
+        console.error("Failed to fetch manifest");
+        setIsPlaying(false);
       }
-    } catch { /* fall through */ }
-    playWithWebSpeech();
+    } catch (error) {
+      console.error("Error loading vocab audio:", error);
+      setIsPlaying(false);
+    }
   };
 
   const goNext = () => {
